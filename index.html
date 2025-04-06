@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Calculator</title>
+    <link rel="icon" type="image/png" href="svgs/fevicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="top-container">
+            <div class="header">
+                <div class="calcNav">
+                    <div class="sidebar-icon">
+                        <img src="svgs/dock_to_right.svg" alt="sidebar-icon">
+                    </div>
+                    <div class="calcType no-select">
+                        Complex Standard
+                    </div>
+                </div>
+
+                <div id="inputBoxes">
+                    <input id="inputBox1" class="no-select" type="text" inputmode="numeric" pattern="[0-9+\-*/().i=]*"
+                        oninput="this.value = this.value.replace(/[^0-9+\-*/().i=]/g, '');" , autofocus, readonly>
+                    <input id="inputBox2" type="text" placeholder="0" inputmode="numeric" pattern="[0-9+\-*/().i=]*"
+                        oninput="this.value = this.value.replace(/[^0-9+\-*/().i=]/g, '');" , autofocus, readonly>
+                </div>
+                <button id="degOrRad" class="button no-select">DEG</button>
+            </div>
+
+            <div class="memory">
+                <div class="history no-select">
+                    History
+                </div>
+            </div>
+        </div>
+        <div class="input-btns">
+            <div class="button-arranger">
+                <div class="rows row1">
+                    <button id="leftBracket" class="button operators no-select">
+                        <div id="openBracket"></div>
+                        (
+                    </button>
+                    <button id="rightBracket" class="button operators no-select">)</button>
+                    <button id="mod" class="button operators no-select"><img src="svgs/mod.svg" class="icon"></button>
+                    <button id="clear-all" class="button operators no-select">AC</button>
+                    <button id="backspace" class="button operators no-select">
+                        <img src="svgs/backspace.svg" class="icon">
+                    </button>
+                </div>
+                <div class="rows row2">
+                    <button id="reciprocal" class="button operators no-select"><img src="svgs/z.svg"
+                            class="icon"></button>
+                    <button id="theta" class="button operators no-select"><img src="svgs/arg.svg" class="icon"></button>
+                    <button id="iota" class="button operators no-select"><img src="svgs/iota.svg" class="icon"></button>
+                    <button id="divide" class="button operators basicOps no-select">÷</button>
+                </div>
+                <div class="rows row3">
+                    <button id="num7" class="button number no-select">7</button>
+                    <button id="num8" class="button number no-select">8</button>
+                    <button id="num9" class="button number no-select">9</button>
+                    <button id="multiply" class="button operators basicOps no-select">×</button>
+                </div>
+                <div class="rows row4">
+                    <button id="num4" class="button number no-select">4</button>
+                    <button id="num5" class="button number no-select">5</button>
+                    <button id="num6" class="button number no-select">6</button>
+                    <button id="subtract" class="button operators basicOps no-select">-</button>
+                </div>
+                <div class="rows row5">
+                    <button id="num1" class="button number no-select">1</button>
+                    <button id="num2" class="button number no-select">2</button>
+                    <button id="num3" class="button number no-select">3</button>
+                    <button id="add" class="button operators basicOps no-select">+</button>
+                </div>
+                <div class="rows row6">
+                    <button id="plusOrMinus" class="button number basicOps no-select">±</button>
+                    <button id="num0" class="button number no-select">0</button>
+                    <button id="dot" class="button number no-select">.</button>
+                    <button id="equals" class="button no-select">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./script.js"></script>
+</body>
+</html>
