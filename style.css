@@ -31,10 +31,10 @@
 }
 
 .header {
-    width: 78%;
     /* 78% of main's width */
-    height: 100%;
     /* Full height of top-container */
+    width: 78%;
+    height: 100%;
 }
 
 .calcNav {
