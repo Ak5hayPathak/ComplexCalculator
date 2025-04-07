@@ -191,7 +191,7 @@
     font-weight: 500;
     position: relative;
     top: 18.5%;
-    left: 6.5%;
+    /* left: 6.5%; */
 }
 
 .number {
@@ -338,12 +338,29 @@
     .sidebar-icon img{
         width: 5.4vh;
     }
+
+    #inputBox1 {
+        font-size: 2vh;
+    }
+    
+    #inputBox2 {
+        font-size: 4.2vh;
+    }
 }
 
 @media (max-width: 750px) {
     .button {
         width: 24.65%;
     }
+
+    #inputBox1 {
+        font-size: 2vh;
+    }
+    
+    #inputBox2 {
+        font-size: 4.2vh;
+    }
+
 }
 @media (max-width: 580px) {
     .button {
@@ -368,6 +385,14 @@
         margin-left: 2vh;
         font-size: 1.8vh;
     }
+
+    #inputBox1 {
+        font-size: 2vh;
+    }
+    
+    #inputBox2 {
+        font-size: 4vh;
+    }
 }
 
 @media (max-width: 480px) {
@@ -377,5 +402,13 @@
     }
     .calcType {
         font-size: 2.2vh;
+    }
+
+    #inputBox1 {
+        font-size: 1.5vh;
+    }
+    
+    #inputBox2 {
+        font-size: 3.5vh;
     }
 }
