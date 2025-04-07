@@ -10,6 +10,70 @@ let bracketCount = 0;
 let isDeg = true;
 let equalFlag = true;
 
+document.addEventListener("keydown", (event) => {
+    const key = event.key;
+
+    if (display1.value.length >= MAX_LENGTH && button.id !== "backspace" && button.id !== "clear-all") {
+        window.alert("Maximum input length reached");
+        return;  // Prevent adding more characters
+    }
+    if (/^[0-9]$/.test(key)) {
+        numVal(display1, display2, key);
+    }
+    else if (key === "i") {
+        iota(display1, display2);
+    }
+    // Operators
+    else if (["+", "-", "*", "/"].includes(key)) {
+        let key2 = "";
+        if (key === "+") {
+            key2 = "add";
+            basicOps(display1, display2, key2);
+        }
+        else if (key === "-") {
+            key2 = "subtract";
+            basicOps(display1, display2, key2);
+        }
+        else if (key === "*") {
+            key2 = "multiply";
+            basicOps(display1, display2, key2);
+        }
+        else if (key === "/") {
+            key2 = "divide";
+            basicOps(display1, display2, key2);
+        }
+    }
+    // Dot
+    else if (key === ".") {
+        decimal(display1, display2);
+    }
+    // Parentheses
+    else if (key === "(") {
+        leftBracket(display1, display2);
+        equalFlag = true;
+    }
+    else if (key === ")") {
+        rightBracket(display1, display2);
+        equalFlag = true;
+    }
+    // Backspace
+    else if (key === "Backspace") {
+        backspace(display1, display2);
+    }
+    // Enter = Evaluate
+    else if (key === "Enter") {
+        equals(display1, display2);
+    }
+    // Clear All with Escape key
+    else if (key === "Escape") {
+        clearAll(display1, display2);
+        equalFlag = true;
+    }
+    // Prevent default for Enter and Backspace to avoid side effects
+    if (["Enter", "Backspace"].includes(key)) {
+        event.preventDefault();
+    }
+});
 
 buttons.forEach(button => {
     button.addEventListener("click", () => {
@@ -30,7 +94,7 @@ buttons.forEach(button => {
         }
         else if (val.startsWith("num")) {
             let numValue = val.replace("num", "");
-            numVal(display2, numValue);
+            numVal(display1, display2, numValue);
         }
         else if (val === "mod") {
             modulus(display1, display2);
@@ -42,7 +106,6 @@ buttons.forEach(button => {
         }
         else if (val === "backspace") {
             backspace(display1, display2);
-
         }
         else if (val === "reciprocal") {
             reciprocal(display1, display2);
@@ -95,29 +158,32 @@ function updateDisplay(display1, display2) {
 }
 
 function leftBracket(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (display1.value === "" && display2.value === "") {
-
-        updateDisplay(display1, display2);
-        display1.value += "(";
-        bracketCount++;
-        updateBracketDisplay();
+    if (display2.value === "") {
+        if (display1.value === "" || ["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
+            updateDisplay(display1, display2);
+            display1.value += "(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
+        else if(display1.value.endsWith(".")){return;}
+        else {
+            updateDisplay(display1, display2);
+            display1.value += "*(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
     }
-    else if (["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
-
-        updateDisplay(display1, display2);
-        display1.value += "(";
-        bracketCount++;
-        updateBracketDisplay();
-    } else if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
     else {
-
-        updateDisplay(display1, display2);
-        display1.value += "*(";
-        bracketCount++;
-        updateBracketDisplay();
+        if (display2.value.endsWith(".")) { }
+        else {
+            updateDisplay(display1, display2);
+            display1.value += "*(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
     }
 }
 
@@ -134,9 +200,9 @@ function rightBracket(display1, display2) {
     }
 }
 
-function numVal(display2, numValue) {
-    
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+function numVal(display1, display2, numValue) {
+
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (countDigits(display2.value + numValue) > 16) {
@@ -162,7 +228,7 @@ function numVal(display2, numValue) {
 }
 
 function modulus(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
@@ -224,7 +290,7 @@ function backspace(display1, display2) {
             }
         }
     } else {
-        if(display2.value === "Invalid"){
+        if (display2.value === "Invalid") {
             display2.value = "";
         }
         display2.value = display2.value.slice(0, -1);
@@ -232,7 +298,7 @@ function backspace(display1, display2) {
 }
 
 function reciprocal(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
@@ -265,7 +331,7 @@ function reciprocal(display1, display2) {
 }
 
 function args(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
@@ -316,7 +382,7 @@ function toggleDegRad() {
 }
 
 function iota(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
@@ -334,7 +400,7 @@ function iota(display1, display2) {
 }
 
 function basicOps(display1, display2, val) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display1.value.endsWith("(") && display2.value === "") {
@@ -404,7 +470,7 @@ function basicOps(display1, display2, val) {
 }
 
 function decimal(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     let lastNum1 = display1.value.split(/[\+\-\*\/\(\)]/).pop(); // Extract last number
@@ -432,7 +498,7 @@ function decimal(display1, display2) {
 }
 
 function togglePlusMinus(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display1.value !== "") {
@@ -440,7 +506,7 @@ function togglePlusMinus(display1, display2) {
         else if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
 
         else if (display1.value.startsWith("-")) {
-            display1.value = display1.value.slice(2,-1);
+            display1.value = display1.value.slice(2, -1);
 
         }
         else {
@@ -455,7 +521,7 @@ function updateBracketDisplay() {
 }
 
 function equals(display1, display2) {
-    if((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid"){
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (equalFlag) {
@@ -469,7 +535,7 @@ function equals(display1, display2) {
             }
 
             try {
-                if(display1.value.endsWith("i") && display2.value.startsWith("i")){
+                if (display1.value.endsWith("i") && display2.value.startsWith("i")) {
                     return;
                 }
                 const result = ComplexEval(expression).toString();

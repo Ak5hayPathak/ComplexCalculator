@@ -219,7 +219,7 @@ export class Complex {
     
         const realPart = format(this.real);
         const imagPart = format(Math.abs(this.imag)) + "i";
-        const sign = this.imag >= 0 ? " + " : " - ";
+        const sign = this.imag >= 0 ? "+" : "-";
     
         return realPart + sign + imagPart;
     }
