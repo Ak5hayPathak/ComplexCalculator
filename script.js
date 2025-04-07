@@ -13,8 +13,8 @@ let equalFlag = true;
 document.addEventListener("keydown", (event) => {
     const key = event.key;
 
-    if (display1.value.length >= MAX_LENGTH && button.id !== "backspace" && button.id !== "clear-all") {
-        window.alert("Maximum input length reached");
+    if ((display1.value.length >= MAX_LENGTH) && !["Backspace", "Escape"].includes(event.key)) {
+        alert("Maximum input length reached");
         return;  // Prevent adding more characters
     }
     if (/^[0-9]$/.test(key)) {
@@ -43,6 +43,24 @@ document.addEventListener("keydown", (event) => {
             basicOps(display1, display2, key2);
         }
     }
+    //mod
+    else if (key === "m") {
+        modulus(display1, display2);
+        equalFlag = true;
+    }
+    //reciprocal
+    else if (key === "r") {
+        reciprocal(display1, display2);
+        equalFlag = true;
+    }
+    //argument
+    else if (key === "a") {
+        args(display1, display2);
+        equalFlag = true;
+    }
+    else if (key === "d") {
+        toggleDegRad();
+    }
     // Dot
     else if (key === ".") {
         decimal(display1, display2);
@@ -59,6 +77,7 @@ document.addEventListener("keydown", (event) => {
     // Backspace
     else if (key === "Backspace") {
         backspace(display1, display2);
+        equalFlag = true;
     }
     // Enter = Evaluate
     else if (key === "Enter") {
@@ -106,6 +125,7 @@ buttons.forEach(button => {
         }
         else if (val === "backspace") {
             backspace(display1, display2);
+            equalFlag = true;
         }
         else if (val === "reciprocal") {
             reciprocal(display1, display2);
@@ -168,7 +188,7 @@ function leftBracket(display1, display2) {
             bracketCount++;
             updateBracketDisplay();
         }
-        else if(display1.value.endsWith(".")){return;}
+        else if (display1.value.endsWith(".")) { return; }
         else {
             updateDisplay(display1, display2);
             display1.value += "*(";
@@ -538,7 +558,7 @@ function equals(display1, display2) {
                 if (display1.value.endsWith("i") && display2.value.startsWith("i")) {
                     return;
                 }
-                const result = ComplexEval(expression).toString();
+                const result = ComplexEval(expression).toString(6);
                 display1.value += display2.value + "=";
                 display2.value = result;
             } catch (e) {
