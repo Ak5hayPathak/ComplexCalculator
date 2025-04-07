@@ -42,6 +42,7 @@ document.addEventListener("keydown", (event) => {
             key2 = "divide";
             basicOps(display1, display2, key2);
         }
+        equalFlag = true;
     }
     //mod
     else if (key === "m") {
@@ -103,12 +104,8 @@ buttons.forEach(button => {
         }
         const val = button.id;
 
-        if (val === "leftBracket") {
-            leftBracket(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "rightBracket") {
-            rightBracket(display1, display2);
+        if (val === "Brackets") {
+            Brackets(display1, display2);
             equalFlag = true;
         }
         else if (val.startsWith("num")) {
@@ -174,6 +171,50 @@ function updateDisplay(display1, display2) {
     else if (display2 !== "") {
         display1.value += display2.value;
         display2.value = "";
+    }
+}
+
+function Brackets(display1, display2) {
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
+        return;
+    }
+    if (display2.value === "") {
+        if (display1.value === "" || ["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
+            updateDisplay(display1, display2);
+            display1.value += "(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
+        else if (display1.value.endsWith(".")) { return; }
+        else {
+            if (bracketCount > 0) {
+                updateDisplay(display1, display2);
+                display1.value += ")";
+                bracketCount--;
+                updateBracketDisplay();
+            }
+            else {
+                updateDisplay(display1, display2);
+                display1.value += "*(";
+                bracketCount++;
+                updateBracketDisplay();
+            }
+        }
+    }
+    else {
+        if (display2.value.endsWith(".")) { return; }
+        else if (bracketCount > 0) {
+            updateDisplay(display1, display2);
+            display1.value += ")";
+            bracketCount--;
+            updateBracketDisplay();
+        }
+        else {
+            updateDisplay(display1, display2);
+            display1.value += "*(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
     }
 }
 

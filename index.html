@@ -14,11 +14,14 @@
         <div class="top-container">
             <div class="header">
                 <div class="calcNav">
-                    <div class="sidebar-icon">
+                    <div class="sidebar-icon no-select">
                         <img src="svgs/dock_to_right.svg" alt="sidebar-icon">
                     </div>
                     <div class="calcType no-select">
                         Complex Standard
+                    </div>
+                    <div class="history-icon no-select">
+                        <img src="svgs/history.svg" alt="history-icon">
                     </div>
                 </div>
 
@@ -29,6 +32,7 @@
                         oninput="this.value = this.value.replace(/[^0-9+\-*/().i=]/g, '');" , autofocus, readonly>
                 </div>
                 <button id="degOrRad" class="button no-select">DEG</button>
+                
             </div>
 
             <div class="memory">
@@ -40,11 +44,10 @@
         <div class="input-btns">
             <div class="button-arranger">
                 <div class="rows row1">
-                    <button id="leftBracket" class="button operators no-select">
+                    <button id="Brackets" class="button operators no-select">
                         <div id="openBracket"></div>
-                        (
+                        (  )
                     </button>
-                    <button id="rightBracket" class="button operators no-select">)</button>
                     <button id="mod" class="button operators no-select"><img src="svgs/mod.svg" class="icon"></button>
                     <button id="clear-all" class="button operators no-select">AC</button>
                     <button id="backspace" class="button operators no-select">
