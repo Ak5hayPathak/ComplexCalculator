@@ -295,7 +295,19 @@
     -ms-user-select: none;
 }
 
+@media (max-width: 1130px) {
+    .sidebar-icon img{
+        width: 5.4vh;
+    }
 
+    #inputBox1 {
+        font-size: 2vh;
+    }
+    
+    #inputBox2 {
+        font-size: 4.2vh;
+    }
+}
 
 @media (min-width: 1050px) {
     .history-icon {
@@ -334,27 +346,13 @@
 
 }
 
-@media (max-width: 1130px) {
-    .sidebar-icon img{
-        width: 5.4vh;
-    }
-
-    #inputBox1 {
-        font-size: 2vh;
-    }
-    
-    #inputBox2 {
-        font-size: 4.2vh;
-    }
-}
-
 @media (max-width: 750px) {
     .button {
         width: 24.65%;
     }
 
     #inputBox1 {
-        font-size: 2vh;
+        font-size: 2.5vh;
     }
     
     #inputBox2 {
@@ -402,13 +400,14 @@
     }
     .calcType {
         font-size: 2.2vh;
+        font-weight: bold;
     }
 
     #inputBox1 {
-        font-size: 1.5vh;
+        font-size: 2vh;
     }
     
     #inputBox2 {
-        font-size: 3.5vh;
+        font-size: 4vh;
     }
 }
