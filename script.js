@@ -5,7 +5,7 @@ const display2 = document.getElementById("inputBox2");
 const buttons = document.querySelectorAll(".button");
 const openBracketBtn = document.getElementById("openBracket");
 
-const MAX_LENGTH = 50;  // Set max length for the input
+const MAX_LENGTH = 70;  // Set max length for the input
 let bracketCount = 0;
 let isDeg = true;
 let equalFlag = true;
@@ -266,7 +266,7 @@ function numVal(display1, display2, numValue) {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (countDigits(display2.value + numValue) > 16) {
+    if (countDigits(display2.value + numValue) > 32) {
         return;
     }
 
@@ -713,7 +713,6 @@ function evaluatePostfix(postfix) {
 
     return stack.pop();
 }
-
 
 function isNumber(token) {
     return /^[0-9.]+i?$/.test(token);

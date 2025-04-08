@@ -200,15 +200,15 @@ export class Complex {
             const rounded = Number(num.toFixed(10));
             return (rounded === Math.floor(rounded)) ? Math.floor(rounded).toString() : num.toFixed(precision);
         };
-    
+
         if (this.isZero()) {
             return "0";
         }
-    
+
         if (this.isPureReal()) {
             return format(this.real);
         }
-    
+
         if (this.isPureImaginary()) {
             if (Math.abs(this.imag) === 1) {
                 return this.imag > 0 ? "i" : "-i";
@@ -216,14 +216,14 @@ export class Complex {
                 return `${format(this.imag)}i`;
             }
         }
-    
+
         const realPart = format(this.real);
         const imagPart = format(Math.abs(this.imag)) + "i";
         const sign = this.imag >= 0 ? "+" : "-";
-    
+
         return realPart + sign + imagPart;
     }
-    
+
 
     static get ZERO() { return Object.freeze(new Complex(0, 0)); }
     static get ONE() { return Object.freeze(new Complex(1, 0)); }
@@ -937,6 +937,3 @@ Object.seal(ComplexMath);
 Object.seal(ComplexLog);
 Object.seal(ComplexPower);
 Object.seal(ComplexTrigono);
-
-// Export all classes in an object
-// export default { Complex, ComplexMath, ComplexLog, ComplexPower, ComplexTrigono };
