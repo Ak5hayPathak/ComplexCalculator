@@ -1,4 +1,4 @@
-import { Complex, ComplexMath } from "./Complex.js";
+import { ComplexEval } from './ComplexLibrary/ComplexEval.js';
 
 const display1 = document.getElementById("inputBox1");
 const display2 = document.getElementById("inputBox2");
@@ -7,88 +7,53 @@ const openBracketBtn = document.getElementById("openBracket");
 
 const MAX_LENGTH = 70;  // Set max length for the input
 let bracketCount = 0;
-let isDeg = true;
 let equalFlag = true;
+let toggleState = 0; // 0: normal, 1: -(), 2: ()
 
 document.addEventListener("keydown", (event) => {
     const key = event.key;
-
+    
     if ((display1.value.length >= MAX_LENGTH) && !["Backspace", "Escape"].includes(event.key)) {
         alert("Maximum input length reached");
         return;  // Prevent adding more characters
     }
     if (/^[0-9]$/.test(key)) {
-        numVal(display1, display2, key);
+        numVal(key);
     }
-    else if (key === "i") {
-        iota(display1, display2);
+
+    switch(key){
+        case "i": iota();
+        break;
+        case "+": basicOps("add");
+        break;
+        case "-": basicOps("subtract");
+        break;
+        case "*": basicOps("multiply");
+        break;
+        case "/": basicOps("divide");
+        break; 
+        case "m": modulus();
+        break;
+        case "r": reciprocal();
+        break;
+        case "a": args();
+        break;
+        case "d": toggleDegRad();
+        break;
+        case ".": decimal();
+        break; 
+        case "(": leftBracket();
+        break; 
+        case ")": rightBracket();
+        break; 
+        case "Backspace": backspace();
+        break; 
+        case "Enter": equals();
+        break; 
+        case "Escape": clearAll();
+        break; 
     }
-    // Operators
-    else if (["+", "-", "*", "/"].includes(key)) {
-        let key2 = "";
-        if (key === "+") {
-            key2 = "add";
-            basicOps(display1, display2, key2);
-        }
-        else if (key === "-") {
-            key2 = "subtract";
-            basicOps(display1, display2, key2);
-        }
-        else if (key === "*") {
-            key2 = "multiply";
-            basicOps(display1, display2, key2);
-        }
-        else if (key === "/") {
-            key2 = "divide";
-            basicOps(display1, display2, key2);
-        }
-        equalFlag = true;
-    }
-    //mod
-    else if (key === "m") {
-        modulus(display1, display2);
-        equalFlag = true;
-    }
-    //reciprocal
-    else if (key === "r") {
-        reciprocal(display1, display2);
-        equalFlag = true;
-    }
-    //argument
-    else if (key === "a") {
-        args(display1, display2);
-        equalFlag = true;
-    }
-    else if (key === "d") {
-        toggleDegRad();
-    }
-    // Dot
-    else if (key === ".") {
-        decimal(display1, display2);
-    }
-    // Parentheses
-    else if (key === "(") {
-        leftBracket(display1, display2);
-        equalFlag = true;
-    }
-    else if (key === ")") {
-        rightBracket(display1, display2);
-        equalFlag = true;
-    }
-    // Backspace
-    else if (key === "Backspace") {
-        backspace(display1, display2);
-        equalFlag = true;
-    }
-    // Enter = Evaluate
-    else if (key === "Enter") {
-        equals(display1, display2);
-    }
-    // Clear All with Escape key
-    else if (key === "Escape") {
-        clearAll(display1, display2);
-        equalFlag = true;
-    }
+
     // Prevent default for Enter and Backspace to avoid side effects
     if (["Enter", "Backspace"].includes(key)) {
         event.preventDefault();
@@ -104,54 +69,42 @@ buttons.forEach(button => {
         }
         const val = button.id;
 
-        if (val === "Brackets") {
-            Brackets(display1, display2);
-            equalFlag = true;
-        }
-        else if (val.startsWith("num")) {
+        if (val.startsWith("num")) {
             let numValue = val.replace("num", "");
-            numVal(display1, display2, numValue);
+            numVal(numValue);
         }
-        else if (val === "mod") {
-            modulus(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "clear-all") {
-            clearAll(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "backspace") {
-            backspace(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "reciprocal") {
-            reciprocal(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "theta") {
-            args(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "degOrRad") {
-            toggleDegRad();
-        }
-        else if (val === "iota") {
-            iota(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "add" || val === "subtract" || val === "multiply" || val === "divide") {
-            basicOps(display1, display2, val);
-            equalFlag = true;
-        }
-        else if (val === "dot") {
-            decimal(display1, display2);
-        }
-        else if (val === "plusOrMinus") {
-            togglePlusMinus(display1, display2);
-            equalFlag = true;
-        }
-        else if (val === "equals") {
-            equals(display1, display2);
+
+        switch(val){
+            case "Brackets": Brackets();
+            break;
+            case "mod": modulus();
+            break;
+            case "clear-all": clearAll();
+            break;
+            case "backspace": backspace();
+            break;
+            case "reciprocal": reciprocal();
+            break;
+            case "theta": args();
+            break;
+            case "degOrRad": toggleDegRad();
+            break;
+            case "iota": iota();
+            break;
+            case "add": basicOps("add");
+            break;
+            case "subtract": basicOps("subtract");
+            break;
+            case "multiply": basicOps("multiply");
+            break;
+            case "divide": basicOps("divide");
+            break;
+            case "dot": decimal();
+            break;
+            case "plusOrMinus": togglePlusMinus();
+            break;
+            case "equals": equals();
+            break;
         }
     });
 });
@@ -160,27 +113,51 @@ function countDigits(str) {
     return (str.match(/\d/g) || []).length;
 }
 
-function updateDisplay(display1, display2) {
+function updateDisplay() {
     if (display1.value !== "" && !["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
         if (equalFlag === false && display2.value !== "") {
             display1.value = display2.value;
             display2.value = "";
+            equalFlag = true;
         }
         return;
     }
     else if (display2 !== "") {
         display1.value += display2.value;
         display2.value = "";
+        equalFlag = true;
     }
 }
 
-function Brackets(display1, display2) {
-    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
-        return;
+function toggleDegRad() {
+    const degOrRadButton = document.getElementById("degOrRad"); // Get the button
+    const currentText = degOrRadButton.innerText.trim();
+    // Toggle between "DEG" and "RAD"
+    if (currentText === "DEG") {
+        degOrRadButton.innerText = "RAD";
+        ComplexEval.isDeg = false;
+    }
+    else {
+        degOrRadButton.innerText = "DEG";
+        ComplexEval.isDeg = true;
+    }
+}
+
+function Brackets() {
+    if (display1.value.endsWith("=")) {
+        if((display2.value === "") || (display2.value === "Invalid")){
+            return;
+        }
+        else{
+            display1.value = "(";
+            bracketCount++;
+            updateBracketDisplay();
+            return;
+        }
     }
     if (display2.value === "") {
         if (display1.value === "" || ["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
-            updateDisplay(display1, display2);
+            updateDisplay();
             display1.value += "(";
             bracketCount++;
             updateBracketDisplay();
@@ -188,13 +165,13 @@ function Brackets(display1, display2) {
         else if (display1.value.endsWith(".")) { return; }
         else {
             if (bracketCount > 0) {
-                updateDisplay(display1, display2);
+                updateDisplay();
                 display1.value += ")";
                 bracketCount--;
                 updateBracketDisplay();
             }
             else {
-                updateDisplay(display1, display2);
+                updateDisplay();
                 display1.value += "*(";
                 bracketCount++;
                 updateBracketDisplay();
@@ -204,13 +181,13 @@ function Brackets(display1, display2) {
     else {
         if (display2.value.endsWith(".")) { return; }
         else if (bracketCount > 0) {
-            updateDisplay(display1, display2);
+            updateDisplay();
             display1.value += ")";
             bracketCount--;
             updateBracketDisplay();
         }
         else {
-            updateDisplay(display1, display2);
+            updateDisplay();
             display1.value += "*(";
             bracketCount++;
             updateBracketDisplay();
@@ -218,20 +195,28 @@ function Brackets(display1, display2) {
     }
 }
 
-function leftBracket(display1, display2) {
-    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
-        return;
+function leftBracket() {
+    if (display1.value.endsWith("=")) {
+        if((display2.value === "") || (display2.value === "Invalid")){
+            return;
+        }
+        else{
+            display1.value = "(";
+            bracketCount++;
+            updateBracketDisplay();
+            return;
+        }
     }
     if (display2.value === "") {
         if (display1.value === "" || ["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
-            updateDisplay(display1, display2);
+            updateDisplay();
             display1.value += "(";
             bracketCount++;
             updateBracketDisplay();
         }
         else if (display1.value.endsWith(".")) { return; }
         else {
-            updateDisplay(display1, display2);
+            updateDisplay();
             display1.value += "*(";
             bracketCount++;
             updateBracketDisplay();
@@ -240,7 +225,7 @@ function leftBracket(display1, display2) {
     else {
         if (display2.value.endsWith(".")) { }
         else {
-            updateDisplay(display1, display2);
+            updateDisplay();
             display1.value += "*(";
             bracketCount++;
             updateBracketDisplay();
@@ -248,80 +233,52 @@ function leftBracket(display1, display2) {
     }
 }
 
-function rightBracket(display1, display2) {
+function rightBracket() {
     if (bracketCount !== 0) {
-
-        updateDisplay(display1, display2);
+        updateDisplay();
         if (bracketCount > 0 && !["+", "-", "*", "/", "(", "."].some(op => display1.value.endsWith(op))) {
             display1.value += ")";
             bracketCount--;
             updateBracketDisplay();
-
         }
     }
 }
 
-function numVal(display1, display2, numValue) {
-
-    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
-        return;
-    }
-    if (countDigits(display2.value + numValue) > 32) {
-        return;
-    }
-
-    if (numValue === "0" && (display2.value === "" || display2.value === "0")) {
-        return;
-    }
-
-    if (display2.value === "") {
-        display2.value = numValue;
-
-    }
-    else if (!["+", "-", "*", "/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "("].some(op => display2.value.endsWith(op))) {
-        display2.value += "*" + numValue;
-
-    }
-    else {
-        display2.value += numValue;
-
-    }
+function updateBracketDisplay() {
+    openBracketBtn.innerText = bracketCount === 0 ? "" : `${bracketCount}`;
 }
 
-function modulus(display1, display2) {
+function modulus() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
     else if (display1.value.endsWith(")")) {
         display1.value += "*mod(";
-
         bracketCount++;
         updateBracketDisplay();
     }
     else if (display2.value === "" || ["+", "-", "*", "/", "("].some(op => display2.value.endsWith(op))) {
-
-        updateDisplay(display1, display2);
+        updateDisplay();
         display1.value += "mod(";
         bracketCount++;
         updateBracketDisplay();
     }
     else {
-
-        updateDisplay(display1, display2);
+        updateDisplay();
         display1.value += "*mod(";
         bracketCount++;
         updateBracketDisplay();
     }
 }
 
-function clearAll(display1, display2) {
+function clearAll() {
     display1.value = display2.value = "";
     bracketCount = 0;
     updateBracketDisplay();
 }
 
-function backspace(display1, display2) {
+function backspace() {
     if (display2.value === "") {
         if (display1.value !== "") {
             const val = display1.value;
@@ -334,7 +291,6 @@ function backspace(display1, display2) {
                 display1.value = val.slice(0, -4);
                 bracketCount--;
                 updateBracketDisplay();
-
             } else {
                 const lastChar = val[len - 1];
                 if (lastChar === "(") {
@@ -344,21 +300,26 @@ function backspace(display1, display2) {
                 } else if (lastChar === ")") {
                     bracketCount++;
                     updateBracketDisplay();
-
                 }
                 display1.value = val.slice(0, -1);
-
             }
         }
     } else {
         if (display2.value === "Invalid") {
             display2.value = "";
         }
-        display2.value = display2.value.slice(0, -1);
+        else if(display1.value.endsWith("=")){
+            display1.value = display1.value.slice(0, -1);
+            display2.value = "";
+            equalFlag = true;
+        }
+        else{
+            display2.value = display2.value.slice(0, -1);
+        }
     }
 }
 
-function reciprocal(display1, display2) {
+function reciprocal() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
@@ -384,35 +345,34 @@ function reciprocal(display1, display2) {
         }
     }
     else {
-        updateDisplay(display1, display2);
+        updateDisplay();
         display1.value += "*rec(";
         bracketCount++;
         updateBracketDisplay();
     }
 }
 
-function args(display1, display2) {
+function args() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
+    if (display2.value.endsWith(".") || display1.value.endsWith(".")) { 
+        return;
+    }
 
     else if (display2.value === "") {
         if (display1.value === "") {
-
             display1.value += "arg(";
             bracketCount++;
             updateBracketDisplay();
         }
         else {
             if (["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op))) {
-
                 display1.value += "arg(";  // Wrap the existing value in modulus
                 bracketCount++;
                 updateBracketDisplay();
             }
             else {
-
                 display1.value += "*arg(";
                 bracketCount++;
                 updateBracketDisplay();
@@ -420,117 +380,127 @@ function args(display1, display2) {
         }
     }
     else {
-
-        updateDisplay(display1, display2);
+        updateDisplay();
         display1.value += "*arg(";
         bracketCount++;
         updateBracketDisplay();
     }
 }
 
-function toggleDegRad() {
-    const degOrRadButton = document.getElementById("degOrRad"); // Get the button
-    const currentText = degOrRadButton.innerText.trim();
-    // Toggle between "DEG" and "RAD"
-    if (currentText === "DEG") {
-        degOrRadButton.innerText = "RAD";
-        isDeg = false;
-    }
-    else {
-        degOrRadButton.innerText = "DEG";
-        isDeg = true;
-    }
-}
-
-function iota(display1, display2) {
+function iota() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
     else if (!display2.value.endsWith(".")) {
-        if (display2.value.endsWith("i")) {
-
-            updateDisplay(display1, display2);
+        if(display1.value.endsWith("=")){
+            display1.value = "";
+            if(display2.value.endsWith("i")){
+                display2.value += "*i";
+            }
+            else{
+                display2.value += "i";
+            }
+        }
+        else if (display2.value.endsWith("i")) {
+            updateDisplay();
             display1.value += "*i";
+            equalFlag = true;
         }
         else {
-
             display2.value += "i";
+            equalFlag = true;
         }
     }
 }
 
-function basicOps(display1, display2, val) {
+function numVal(numValue) {
+
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (display1.value.endsWith("(") && display2.value === "") {
-        if (val === "subtract") {
+    if (countDigits(display2.value + numValue) > 32) {
+        return;
+    }
+    if (numValue === "0" && (display2.value === "" || display2.value === "0")) {
+        return;
+    }
 
-            updateDisplay(display1, display2);
-            display1.value += "-";
-        }
-        else { }
+    if (display2.value === "") {
+        display2.value = numValue;
+    }
+    else if (!["+", "-", "*", "/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "("].some(op => display2.value.endsWith(op))) {
+        display2.value += "*" + numValue;
+        updateDisplay();
     }
     else {
-        if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
-        else if (display2.value === "") {
-            if (display1.value === "") {
-                switch (val) {
-                    case "add": display1.value = "0+";
-                        break;
-                    case "subtract": display1.value = "0-";
-                        break;
-                    case "multiply": display1.value = "0*";
-                        break;
-                    case "divide": display1.value = "0/";
-                        break;
-                }
-            }
-            else {
-                if (display1.value[display1.value.length - 2] !== "(" && display2.value === "") {
-                    if (["+", "-", "*", "/"].some(op => display1.value.endsWith(op))) {
-                        display1.value = display1.value.slice(0, -1);
-                    }
-                    switch (val) {
-                        case "add":
-                            updateDisplay(display1, display2);
-                            display1.value += "+";
-                            break;
-                        case "subtract":
-                            updateDisplay(display1, display2);
-                            display1.value += "-";
-                            break;
-                        case "multiply":
-                            updateDisplay(display1, display2);
-                            display1.value += "*";
-                            break;
-                        case "divide":
-                            updateDisplay(display1, display2);
-                            display1.value += "/";
-                            break;
-                    }
-                }
-            }
+        if(display1.value.endsWith("=")){
+            display1.value = "";
         }
-        else {
-
-            updateDisplay(display1, display2);
-            switch (val) {
-                case "add": display1.value += "+";
-                    break;
-                case "subtract": display1.value += "-";
-                    break;
-                case "multiply": display1.value += "*";
-                    break;
-                case "divide": display1.value += "/";
-                    break;
-            }
-        }
+        display2.value += numValue;
     }
 }
 
-function decimal(display1, display2) {
+function basicOps(val) {
+    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
+        return;
+    }
+
+    // Helper: get operator character
+    const getOperator = (val) => {
+        switch (val) {
+            case "add": return "+";
+            case "subtract": return "-";
+            case "multiply": return "*";
+            case "divide": return "/";
+            default: return "";
+        }
+    };
+
+    const operator = getOperator(val);
+
+    // If display1 ends with '(', allow only '-' for negative numbers
+    if (display1.value.endsWith("(") && display2.value === "") {
+        if (val === "subtract") {
+            updateDisplay();
+            display1.value += "-";
+        }
+        return;
+    }
+
+    // If nothing in display2 (pending number), and display1 is also empty
+    if (display2.value === "") {
+        if (display1.value === "") {
+            display1.value = "0" + operator;
+            equalFlag = true;
+            return;
+        }
+
+        // Prevent multiple operators in a row
+        if (["+", "-", "*", "/"].includes(display1.value.at(-1))) {
+            display1.value = display1.value.slice(0, -1) + operator;
+            return;
+        }
+
+        // Don't allow operator after a dot (incomplete number)
+        if (display1.value.endsWith(".")) {
+            return;
+        }
+
+        // Add operator if valid
+        display1.value += operator;
+        equalFlag = true;
+        return;
+    }
+
+    // If display2 has a value, append it to display1 and then operator
+    if (!(display2.value.endsWith(".") || display1.value.endsWith("."))) {
+        updateDisplay();
+        display1.value += operator;
+    }
+}
+
+function decimal() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
@@ -558,172 +528,57 @@ function decimal(display1, display2) {
 
 }
 
-function togglePlusMinus(display1, display2) {
-    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
+function togglePlusMinus() {
+
+    let expr = display1.value;
+
+    if ((expr.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (display1.value !== "") {
-        if ((bracketCount !== 0) || (["+", "-", "*", "/", "("].some(op => display1.value.endsWith(op)))) { }
-        else if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
+    if (expr !== "" && !expr.endsWith("=")) {
 
-        else if (display1.value.startsWith("-")) {
-            display1.value = display1.value.slice(2, -1);
-
+        if ((["+", "-", "*", "/", "(", "."].some(op => expr.endsWith(op)))) {
+            return;
         }
-        else {
-            display1.value = `-(${display1.value})`;
 
+        if (toggleState === 0) {
+            display1.value = `-(${expr})`;
+            toggleState = 1;
+        } else if (toggleState === 1) {
+            if (expr.startsWith("-(") && expr.endsWith(")")) {
+                display1.value = `(${expr.slice(2, -1)})`;
+                toggleState = 2;
+            }
+        } else if (toggleState === 2) {
+            if (expr.startsWith("(") && expr.endsWith(")")) {
+                display1.value = expr.slice(1, -1);
+                toggleState = 0;
+            }
         }
     }
 }
 
-function updateBracketDisplay() {
-    openBracketBtn.innerText = bracketCount === 0 ? "" : `${bracketCount}`;
-}
+function equals() {
+    if (!equalFlag) return;
 
-function equals(display1, display2) {
-    if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
-        return;
-    }
-    if (equalFlag) {
-        if (display1.value !== "" || display2.value !== "") {
-            const expression = display1.value + display2.value;
+    if (display1.value !== "" || display2.value !== "") {
+        const expression = display1.value + display2.value;
 
-            // Prevent evaluation if expression ends with an operator, open bracket, or dot
-            if (/[+\-*/(.]$/.test(expression)) {
-                // Invalid ending; don't evaluate
-                return;
-            }
+        if (/[+\-*/(.]$/.test(expression)) return;
 
-            try {
-                if (display1.value.endsWith("i") && display2.value.startsWith("i")) {
-                    return;
-                }
-                const result = ComplexEval(expression).toString(6);
-                display1.value += display2.value + "=";
-                display2.value = result;
-            } catch (e) {
-                display1.value += "=";
-                display2.value = "Invalid";
-            }
-        }
+        try {
+            console.log("Evaluating expression:", expression);
+            const output = ComplexEval.eval(expression);
+            console.log("Eval result:", output);
+        
+            const result = output.toString(6);
+            display1.value += display2.value + "=";
+            display2.value = result;
+        } catch (e) {
+            console.error("Evaluation Error:", e);
+            display1.value += "=";
+            display2.value = "Invalid";
+        }        
     }
     equalFlag = false;
-}
-
-// ComplexEval.js
-function ComplexEval(input) {
-    input = input.replace(/mod/gi, "MOD")
-        .replace(/arg/gi, "ARG")
-        .replace(/rec/gi, "REC");
-
-    const tokens = tokenize(input);
-    const postfix = infixToPostfix(tokens);
-    return evaluatePostfix(postfix);
-}
-
-function tokenize(expr) {
-    const regex = /\d+(\.\d+)?i?|\+|\-|\*|\/|\(|\)|MOD|ARG|REC|i/g;
-    const rawTokens = expr.match(regex);
-    if (!rawTokens) return [];
-
-    const tokens = [];
-    for (let i = 0; i < rawTokens.length; i++) {
-        const token = rawTokens[i];
-        if (token === '-' && (i === 0 || ["+", "-", "*", "/", "(", "MOD", "ARG", "REC"].includes(rawTokens[i - 1]))) {
-            tokens.push('u-'); // unary minus
-        } else {
-            tokens.push(token);
-        }
-    }
-    return tokens;
-}
-
-
-function infixToPostfix(tokens) {
-    const precedence = { 'u-': 3, '+': 1, '-': 1, '*': 2, '/': 2 };
-    const output = [];
-    const stack = [];
-
-    for (const token of tokens) {
-        if (isNumber(token) || token === 'i') {
-            output.push(token);
-        } else if (["MOD", "ARG", "REC"].includes(token)) {
-            stack.push(token);
-        } else if (token === '(') {
-            stack.push(token);
-        } else if (token === ')') {
-            while (stack.length && stack[stack.length - 1] !== '(') {
-                output.push(stack.pop());
-            }
-            stack.pop(); // pop '('
-            if (["MOD", "ARG", "REC"].includes(stack[stack.length - 1])) {
-                output.push(stack.pop());
-            }
-        } else if (["+", "-", "*", "/", "u-"].includes(token)) {
-            while (
-                stack.length &&
-                precedence[stack[stack.length - 1]] >= precedence[token]
-            ) {
-                output.push(stack.pop());
-            }
-            stack.push(token);
-        }
-    }
-
-    while (stack.length) {
-        output.push(stack.pop());
-    }
-
-    return output;
-}
-
-
-function evaluatePostfix(postfix) {
-    const stack = [];
-
-    for (const token of postfix) {
-        if (isNumber(token)) {
-            stack.push(parseComplex(token));
-        } else if (token === 'i') {
-            stack.push(new Complex(0, 1));
-        } else if (["+", "-", "*", "/"].includes(token)) {
-            const b = stack.pop();
-            const a = stack.pop();
-            switch (token) {
-                case '+': stack.push(ComplexMath.add(a, b)); break;
-                case '-': stack.push(ComplexMath.subtract(a, b)); break;
-                case '*': stack.push(ComplexMath.multiply(a, b)); break;
-                case '/': stack.push(ComplexMath.divide(a, b)); break;
-            }
-        } else if (token === 'u-') {
-            const z = stack.pop();
-            stack.push(ComplexMath.multiply(new Complex(-1, 0), z));
-        } else if (["MOD", "ARG", "REC"].includes(token)) {
-            const z = stack.pop();
-            if (token === "MOD") stack.push(new Complex(z.getMod(), 0));
-            if (token === "ARG") {
-                stack.push(new Complex(
-                    isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle(), 0
-                ));
-            }
-            if (token === "REC") stack.push(new Complex(z.getReciprocal(), 0));
-        }
-    }
-
-    return stack.pop();
-}
-
-function isNumber(token) {
-    return /^[0-9.]+i?$/.test(token);
-}
-
-function parseComplex(token) {
-    if (token.endsWith("i")) {
-        const value = token.slice(0, -1);
-        const imag = value === '' || value === '+' ? 1 : value === '-' ? -1 : parseFloat(value);
-        return new Complex(0, imag);
-    } else {
-        return new Complex(parseFloat(token), 0);
-    }
 }

@@ -5,10 +5,10 @@
 }
 
 :root {
-    --bgColor: #1c1c1c;
+    --bgColor: #222222;
     --textColor: white;
-    --operatorsColor: #2E2E2E;
-    --numbersColor: #404040;
+    --operatorsColor: #303030;
+    --numbersColor: #3a3a3a;
     --buttonActiveColor: #202020;
     --equalsColor: #FF3D00;
     --equalsHoverColor: #cf3000;
@@ -64,6 +64,7 @@
     color: var(--textColor);
     font-family: "Poppins";
     font-size: 2.7vh;
+    font-weight: 500;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -295,84 +296,81 @@
     -ms-user-select: none;
 }
 
+/* Up to 1130px */
 @media (max-width: 1130px) {
-    .sidebar-icon img{
+    .sidebar-icon img {
         width: 5.4vh;
     }
 
     #inputBox1 {
         font-size: 2vh;
     }
-    
+
     #inputBox2 {
         font-size: 4.2vh;
     }
 }
 
+/* Hide .history-icon above 1050px */
 @media (min-width: 1050px) {
     .history-icon {
         display: none;
     }
 }
 
+/* Up to 1050px */
 @media (max-width: 1050px) {
     .memory {
         display: none;
     }
 
     .history-icon {
-        height: 100%;
-        color: rgb(255, 255, 255);
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        /* padding-right: 4vh; */
-        /* margin-right: 0vh; */
+        height: 100%;
+        color: white;
+        padding-right: 3.5px;
     }
 
-    .history-icon img{
-        width: 4.1vh;
+    .history-icon img {
+        width: 4.2vh;
     }
 
-    .header {
-        width: 100vw;
-        margin-right: 1vh;
-    }
-
+    .header,
     .input-btns {
         width: 100vw;
         margin-right: 1vh;
     }
-
 }
 
+/* Up to 750px */
 @media (max-width: 750px) {
     .button {
         width: 24.65%;
     }
 
     #inputBox1 {
-        font-size: 2.5vh;
+        font-size: 2.2vh; /* adjusted to reduce jump */
     }
-    
+
     #inputBox2 {
         font-size: 4.2vh;
     }
-
 }
+
+/* Up to 580px */
 @media (max-width: 580px) {
     .button {
         width: 24.50%;
     }
-    .calcType {
-        font-size: 2.3vh;
-    }
 
-    .history-icon img{
-        width: 3.5vh;
-    }
+    /* .calcType {
+        font-size: 2.6vh;
+    } */
 
-    .sidebar-icon img{
+    .history-icon img,
+    .sidebar-icon img {
         width: 3.5vh;
     }
 
@@ -387,26 +385,28 @@
     #inputBox1 {
         font-size: 2vh;
     }
-    
+
     #inputBox2 {
         font-size: 4vh;
     }
 }
 
+/* Up to 480px */
 @media (max-width: 480px) {
     .button {
         width: 24.45%;
         height: 101%;
     }
-    .calcType {
+
+    /* .calcType {
         font-size: 2.2vh;
         font-weight: bold;
-    }
+    } */
 
     #inputBox1 {
         font-size: 2vh;
     }
-    
+
     #inputBox2 {
         font-size: 4vh;
     }
