@@ -3,7 +3,6 @@ import { ComplexEval } from './ComplexLibrary/ComplexEval.js';
 const display1 = document.getElementById("inputBox1");
 const display2 = document.getElementById("inputBox2");
 const buttons = document.querySelectorAll(".button");
-const openBracketBtn = document.getElementById("openBracket");
 
 const MAX_LENGTH = 70;  // Set max length for the input
 let bracketCount = 0;
