@@ -12,7 +12,7 @@ let toggleState = 0; // 0: normal, 1: -(), 2: ()
 
 document.addEventListener("keydown", (event) => {
     const key = event.key;
-    
+
     if ((display1.value.length >= MAX_LENGTH) && !["Backspace", "Escape"].includes(event.key)) {
         alert("Maximum input length reached");
         return;  // Prevent adding more characters
@@ -21,37 +21,37 @@ document.addEventListener("keydown", (event) => {
         numVal(key);
     }
 
-    switch(key){
+    switch (key) {
         case "i": iota();
-        break;
+            break;
         case "+": basicOps("add");
-        break;
+            break;
         case "-": basicOps("subtract");
-        break;
+            break;
         case "*": basicOps("multiply");
-        break;
+            break;
         case "/": basicOps("divide");
-        break; 
+            break;
         case "m": modulus();
-        break;
+            break;
         case "r": reciprocal();
-        break;
+            break;
         case "a": args();
-        break;
+            break;
         case "d": toggleDegRad();
-        break;
+            break;
         case ".": decimal();
-        break; 
+            break;
         case "(": leftBracket();
-        break; 
+            break;
         case ")": rightBracket();
-        break; 
+            break;
         case "Backspace": backspace();
-        break; 
+            break;
         case "Enter": equals();
-        break; 
+            break;
         case "Escape": clearAll();
-        break; 
+            break;
     }
 
     // Prevent default for Enter and Backspace to avoid side effects
@@ -74,37 +74,37 @@ buttons.forEach(button => {
             numVal(numValue);
         }
 
-        switch(val){
+        switch (val) {
             case "Brackets": Brackets();
-            break;
+                break;
             case "mod": modulus();
-            break;
+                break;
             case "clear-all": clearAll();
-            break;
+                break;
             case "backspace": backspace();
-            break;
+                break;
             case "reciprocal": reciprocal();
-            break;
+                break;
             case "theta": args();
-            break;
+                break;
             case "degOrRad": toggleDegRad();
-            break;
+                break;
             case "iota": iota();
-            break;
+                break;
             case "add": basicOps("add");
-            break;
+                break;
             case "subtract": basicOps("subtract");
-            break;
+                break;
             case "multiply": basicOps("multiply");
-            break;
+                break;
             case "divide": basicOps("divide");
-            break;
+                break;
             case "dot": decimal();
-            break;
+                break;
             case "plusOrMinus": togglePlusMinus();
-            break;
+                break;
             case "equals": equals();
-            break;
+                break;
         }
     });
 });
@@ -145,10 +145,10 @@ function toggleDegRad() {
 
 function Brackets() {
     if (display1.value.endsWith("=")) {
-        if((display2.value === "") || (display2.value === "Invalid")){
+        if ((display2.value === "") || (display2.value === "Invalid")) {
             return;
         }
-        else{
+        else {
             display1.value = "(";
             bracketCount++;
             updateBracketDisplay();
@@ -197,10 +197,10 @@ function Brackets() {
 
 function leftBracket() {
     if (display1.value.endsWith("=")) {
-        if((display2.value === "") || (display2.value === "Invalid")){
+        if ((display2.value === "") || (display2.value === "Invalid")) {
             return;
         }
-        else{
+        else {
             display1.value = "(";
             bracketCount++;
             updateBracketDisplay();
@@ -252,7 +252,9 @@ function modulus() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
+    if (display2.value.endsWith(".") || display1.value.endsWith(".")) {
+        return;
+    }
     else if (display1.value.endsWith(")")) {
         display1.value += "*mod(";
         bracketCount++;
@@ -265,10 +267,17 @@ function modulus() {
         updateBracketDisplay();
     }
     else {
-        updateDisplay();
-        display1.value += "*mod(";
-        bracketCount++;
-        updateBracketDisplay();
+        if (display1.value === "" || display1.value.endsWith("=")) {
+            display1.value = "mod(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
+        else {
+            updateDisplay();
+            display1.value += "*mod(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
     }
 }
 
@@ -308,12 +317,12 @@ function backspace() {
         if (display2.value === "Invalid") {
             display2.value = "";
         }
-        else if(display1.value.endsWith("=")){
+        else if (display1.value.endsWith("=")) {
             display1.value = display1.value.slice(0, -1);
             display2.value = "";
             equalFlag = true;
         }
-        else{
+        else {
             display2.value = display2.value.slice(0, -1);
         }
     }
@@ -345,10 +354,17 @@ function reciprocal() {
         }
     }
     else {
-        updateDisplay();
-        display1.value += "*rec(";
-        bracketCount++;
-        updateBracketDisplay();
+        if (display1.value === "" || display1.value.endsWith("=")) {
+            display1.value = "rec(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
+        else {
+            updateDisplay();
+            display1.value += "*rec(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
     }
 }
 
@@ -356,7 +372,7 @@ function args() {
     if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
         return;
     }
-    if (display2.value.endsWith(".") || display1.value.endsWith(".")) { 
+    if (display2.value.endsWith(".") || display1.value.endsWith(".")) {
         return;
     }
 
@@ -380,10 +396,17 @@ function args() {
         }
     }
     else {
-        updateDisplay();
-        display1.value += "*arg(";
-        bracketCount++;
-        updateBracketDisplay();
+        if (display1.value === "" || display1.value.endsWith("=")) {
+            display1.value = "arg(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
+        else {
+            updateDisplay();
+            display1.value += "*arg(";
+            bracketCount++;
+            updateBracketDisplay();
+        }
     }
 }
 
@@ -393,12 +416,12 @@ function iota() {
     }
     if (display2.value.endsWith(".") || display1.value.endsWith(".")) { }
     else if (!display2.value.endsWith(".")) {
-        if(display1.value.endsWith("=")){
+        if (display1.value.endsWith("=")) {
             display1.value = "";
-            if(display2.value.endsWith("i")){
+            if (display2.value.endsWith("i")) {
                 display2.value += "*i";
             }
-            else{
+            else {
                 display2.value += "i";
             }
         }
@@ -434,7 +457,7 @@ function numVal(numValue) {
         updateDisplay();
     }
     else {
-        if(display1.value.endsWith("=")){
+        if (display1.value.endsWith("=")) {
             display1.value = "";
         }
         display2.value += numValue;
@@ -570,7 +593,7 @@ function equals() {
             console.log("Evaluating expression:", expression);
             const output = ComplexEval.eval(expression);
             console.log("Eval result:", output);
-        
+
             const result = output.toString(6);
             display1.value += display2.value + "=";
             display2.value = result;
@@ -578,7 +601,7 @@ function equals() {
             console.error("Evaluation Error:", e);
             display1.value += "=";
             display2.value = "Invalid";
-        }        
+        }
     }
     equalFlag = false;
 }
