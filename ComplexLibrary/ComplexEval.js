@@ -4,7 +4,9 @@ import { ComplexPower } from './ComplexPower.js';
 import { ComplexLog } from './ComplexLog.js';
 import { ComplexTrigono } from './ComplexTrigono.js';
 
-export let isDeg = true;
+export let state = {
+    isDeg: true
+} 
 
 export function Eval(input) {
     input = input.replace(/mod/gi, "MOD")
@@ -96,7 +98,7 @@ function evaluatePostfix(postfix) {
             if (token === "MOD") stack.push(new Complex(z.getMod(), 0));
             if (token === "ARG") {
                 stack.push(new Complex(
-                    isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle(), 0
+                    state.isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle(), 0
                 ));
             }
             if (token === "REC") stack.push(new Complex(z.getReciprocal(), 0));
