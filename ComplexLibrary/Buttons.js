@@ -1,4 +1,4 @@
-import { ComplexEval } from './ComplexEval.js';
+import { Eval, isDeg } from './ComplexEval.js';
 
 export class Button{
     static bracketCount = 0;
@@ -29,11 +29,11 @@ export class Button{
         // Toggle between "DEG" and "RAD"
         if (currentText === "DEG") {
             degOrRadButton.innerText = "RAD";
-            ComplexEval.isDeg = false;
+            isDeg = false;
         }
         else {
             degOrRadButton.innerText = "DEG";
-            ComplexEval.isDeg = true;
+            isDeg = true;
         }
     }
     
@@ -485,7 +485,7 @@ export class Button{
     
             try {
                 console.log("Evaluating expression:", expression);
-                const output = ComplexEval.eval(expression);
+                const output = Eval(expression);
                 console.log("Eval result:", output);
     
                 const result = output.toString(6);
