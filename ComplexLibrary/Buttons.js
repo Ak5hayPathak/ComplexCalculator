@@ -345,10 +345,6 @@ export class Button{
         if (display2.value === "") {
             display2.value = numValue;
         }
-        else if (!["+", "-", "*", "/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "("].some(op => display1.value.endsWith(op))) {
-            display1.value += ("*" + numValue);
-            this.updateDisplay(display1, display2);
-        }
         else {
             if (display1.value.endsWith("=")) {
                 display1.value = "";
