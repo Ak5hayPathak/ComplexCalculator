@@ -74,7 +74,6 @@ export class Complex {
         return Math.abs(this.real) < tolerance && Math.abs(this.imag) < tolerance;
     }
 
-
     isPureReal(tolerance = 1e-10) {
         return (!this.isZero()) && (Math.abs(this.imag) < tolerance);
     }

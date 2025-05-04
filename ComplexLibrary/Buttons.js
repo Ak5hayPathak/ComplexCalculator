@@ -39,10 +39,7 @@ export class Button{
     
     static Brackets(display1, display2) {
         if (display1.value.endsWith("=")) {
-            if ((display2.value === "") || (display2.value === "Invalid")) {
-                return;
-            }
-            else {
+            if (display2.value !== "" && display2.value !== "Invalid") {
                 display1.value = "(";
                 this.bracketCount++;
                 this.updateBracketDisplay(this.openBracketBtn);
@@ -56,36 +53,32 @@ export class Button{
                 this.bracketCount++;
                 this.updateBracketDisplay(this.openBracketBtn);
             }
-            else if (display1.value.endsWith(".")) { return; }
-            else {
+            else if (!display1.value.endsWith(".")){
+                this.updateDisplay(display1, display2);
                 if (this.bracketCount > 0) {
-                    this.updateDisplay(display1, display2);
                     display1.value += ")";
                     this.bracketCount--;
-                    this.updateBracketDisplay(this.openBracketBtn);
                 }
                 else {
-                    this.updateDisplay(display1, display2);
                     display1.value += "*(";
                     this.bracketCount++;
-                    this.updateBracketDisplay(this.openBracketBtn);
                 }
+                this.updateBracketDisplay(this.openBracketBtn);
             }
         }
         else {
             if (display2.value.endsWith(".")) { return; }
-            else if (this.bracketCount > 0) {
-                this.updateDisplay(display1, display2);
+            
+            this.updateDisplay(display1, display2);
+            if (this.bracketCount > 0) {
                 display1.value += ")";
                 this.bracketCount--;
-                this.updateBracketDisplay(this.openBracketBtn);
             }
             else {
-                this.updateDisplay(display1, display2);
                 display1.value += "*(";
                 this.bracketCount++;
-                this.updateBracketDisplay(this.openBracketBtn);
             }
+            this.updateBracketDisplay(this.openBracketBtn);
         }
     }
     
@@ -345,6 +338,11 @@ export class Button{
         if (display2.value === "") {
             display2.value = numValue;
         }
+        else if (display2.value.endsWith("i")) {
+            display2.value += "*" + numValue;
+            this.updateDisplay(display1, display2);
+            display2.value = "";
+        }
         else {
             if (display1.value.endsWith("=")) {
                 display1.value = "";
@@ -425,8 +423,9 @@ export class Button{
         else if (display2.value === "") {
             display2.value = "0.";  // Prevent leading "."
         }
-        else if ([")", "i"].some(op => display2.value.endsWith(op))) {
-            display2.value += "*0.";  // Implicit multiplication
+        else if (display2.value.endsWith("i")) {
+            display1.value += display2.value + "*";
+            display2.value = "0.";
         }
         else if (display2.value.endsWith(".")) {
             return;  // Prevent multiple consecutive dots
@@ -483,17 +482,16 @@ export class Button{
     
             if (/[+\-*/(.]$/.test(expression)) return;
     
+            display1.value += display2.value + "=";
+            
             try {
                 console.log("Evaluating expression:", expression);
                 const output = Eval(expression);
                 console.log("Eval result:", output);
-    
                 const result = output.toString(6);
-                display1.value += display2.value + "=";
                 display2.value = result;
             } catch (e) {
                 console.error("Evaluation Error:", e);
-                display1.value += "=";
                 display2.value = "Invalid";
             }
         }
