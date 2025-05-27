@@ -31,7 +31,7 @@ export class ComplexLog {
     }
 
     static log10(num, isImaginary = false) {
-        let logBase10 = (complex) => Complex.divide(Complex.ln(complex), Math.log(10));
+        let logBase10 = (complex) => ComplexMath.divide(this.ln(complex), Math.log(10));
 
         if (num instanceof Complex) {
             return logBase10(num);

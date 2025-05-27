@@ -2,6 +2,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-x: hidden;   /* Hide horizontal scroll bar */
+    overflow-y: hidden;   /* Hide horizontal scroll bar */
 }
 
 :root {
@@ -130,6 +132,14 @@
     align-items: center;
 }
 
+.thin-line {
+  height: 1px;
+  width: 105%;            /* Prevent horizontal overflow */
+  border: none;
+  background-color: rgb(52, 52, 52);
+}
+
+
 .input-btns {
     width: 78%;
     /* 75% of main's width */
@@ -138,10 +148,14 @@
     background-color: var(--bgColor);
 }
 
+.advOperations{
+    width: 100%;
+    height: 12.5%;
+}
+
 .button-arranger {
     width: 100%;
-    height: 100%;
-    background-color: var(--bgColor);
+    height: 87.5%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -149,21 +163,19 @@
     flex-wrap: wrap;
 }
 
-.rows {
+.rows{
     width: 100%;
-    height: 15.9%;
+    height: 13.5%;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
 }
 
-.button {
+.buttons {
     color: var(--textColor);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 19.7%;
+    height: 99%;
     font-size: 2.8vh;
-    font-weight: 400;
-    width: 24.72%;
-    height: 100%;
     border-width: 0px;
     border-radius: 6px;
     border-color: transparent;
@@ -176,34 +188,24 @@
     cursor: pointer;
 }
 
-.basicOps {
-    font-size: 3.5vh;
-}
-
-#clear-all {
-    font-size: 2.5vh;
-}
-
-#openBracket {
+#Brackets #openBracket {
     height: 30%;
-    /* width: 0%; */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana;
     font-size: 1.7vh;
     font-weight: 500;
     position: relative;
     top: 18.5%;
-    /* left: 6.5%; */
 }
 
-.number {
+.numbers {
     background-color: var(--numbersColor);
 }
 
-.number:hover {
+.numbers:hover {
     background-color: var(--operatorsColor);
 }
 
-.number:active {
+.numbers:active {
     background-color: var(--buttonActiveColor);
     /* Color when clicked */
     transform: scale(0.98);
@@ -243,26 +245,6 @@
     /* Slight press effect */
 }
 
-.icon {
-    width: 3.5vh;
-    /* Set SVG width */
-}
-
-#reciprocal .icon {
-    width: 4.5vh;
-    /* Set SVG width */
-}
-
-#theta .icon {
-    width: 2.25vh;
-    /* Set SVG width */
-}
-
-#iota .icon {
-    width: 1.3vh;
-    /* Set SVG width */
-}
-
 #degOrRad {
     width: 8%;
     height: 18%;
@@ -288,6 +270,7 @@
     background-color: var(--bgColor);
 }
 
+
 .no-select {
     user-select: none;
     /* Prevents text selection */
@@ -296,118 +279,30 @@
     -ms-user-select: none;
 }
 
-/* Up to 1130px */
-@media (max-width: 1130px) {
-    .sidebar-icon img {
-        width: 5.4vh;
-    }
-
-    #inputBox1 {
-        font-size: 2vh;
-    }
-
-    #inputBox2 {
-        font-size: 4.2vh;
-    }
+#sqrOrCube > :last-child{
+    display: none;
 }
 
-/* Hide .history-icon above 1050px */
-@media (min-width: 1050px) {
-    .history-icon {
-        display: none;
-    }
+#sqrtOrCbrt > :last-child{
+    display: none;
 }
 
-/* Up to 1050px */
-@media (max-width: 1050px) {
-    .memory {
-        display: none;
-    }
-
-    .history-icon {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        height: 100%;
-        color: white;
-        padding-right: 3.5px;
-    }
-
-    .history-icon img {
-        width: 4.2vh;
-    }
-
-    .header,
-    .input-btns {
-        width: 100vw;
-        margin-right: 1vh;
-    }
+#powerOrRoot > :last-child{
+    display: none;
 }
 
-/* Up to 750px */
-@media (max-width: 750px) {
-    .button {
-        width: 24.65%;
-    }
-
-    #inputBox1 {
-        font-size: 2.2vh; /* adjusted to reduce jump */
-    }
-
-    #inputBox2 {
-        font-size: 4.2vh;
-    }
+#tenPowerOrTwoPower > :last-child{
+    display: none;
 }
 
-/* Up to 580px */
-@media (max-width: 580px) {
-    .button {
-        width: 24.50%;
-    }
-
-    /* .calcType {
-        font-size: 2.6vh;
-    } */
-
-    .history-icon img,
-    .sidebar-icon img {
-        width: 3.5vh;
-    }
-
-    #degOrRad {
-        width: 6vh;
-        height: 5vh;
-        margin-top: 1.5vh;
-        margin-left: 2vh;
-        font-size: 1.8vh;
-    }
-
-    #inputBox1 {
-        font-size: 2vh;
-    }
-
-    #inputBox2 {
-        font-size: 4vh;
-    }
+#log10OrLog > :last-child{
+    display: none;
 }
 
-/* Up to 480px */
-@media (max-width: 480px) {
-    .button {
-        width: 24.45%;
-        height: 101%;
-    }
+#lnOrE > :last-child{
+    display: none;
+}
 
-    /* .calcType {
-        font-size: 2.2vh;
-        font-weight: bold;
-    } */
-
-    #inputBox1 {
-        font-size: 2vh;
-    }
-
-    #inputBox2 {
-        font-size: 4vh;
-    }
+#toggleOperators > :last-child{
+    display: none;
 }

@@ -1,10 +1,11 @@
-import { Button } from './ComplexUtils/Buttons.js';
+import { Button } from '../ComplexUtils/Buttons.js';
+import { operatorState } from '../ComplexUtils/ComplexEval.js';
 
 const display1 = document.getElementById("inputBox1");
 const display2 = document.getElementById("inputBox2");
-const buttons = document.querySelectorAll(".button");
+const buttons = document.querySelectorAll(".buttons");
 
-const MAX_LENGTH = 70;  // Set max length for the input
+const MAX_LENGTH = 1000;  // Set max length for the input
 
 document.addEventListener("keydown", (event) => {
     const key = event.key;
@@ -44,7 +45,7 @@ document.addEventListener("keydown", (event) => {
             break;
         case "Backspace": Button.backspace(display1, display2);
             break;
-        case "Enter": Button.equals(display1, display2, 6);
+        case "Enter": Button.equals(display1, display2, 12);
             break;
         case "Escape": Button.clearAll(display1, display2);
             break;
@@ -99,7 +100,37 @@ buttons.forEach(button => {
                 break;
             case "plusOrMinus": Button.togglePlusMinus(display1, display2);
                 break;
-            case "equals": Button.equals(display1, display2, 6);
+            case "sqrOrCube":
+                operatorState.isBool ? Button.square(display1, display2) : Button.cube(display1, display2);
+                break;
+            case "sqrtOrCbrt": 
+                operatorState.isBool ? Button.squareRoot(display1, display2) : Button.cubeRoot(display1, display2);
+                break;
+            case "powerOrRoot": 
+                operatorState.isBool ? Button.basicOps("power", display1, display2) : Button.basicOps("root", display1, display2);
+                break;
+            case "tenPowerOrTwoPower": 
+                operatorState.isBool ? Button.tenToPow(display1, display2) : Button.twoToPow(display1, display2);
+                break;
+            case "log10OrLog": 
+                operatorState.isBool ? Button.log10(display1, display2) : Button.basicOps("log", display1, display2);
+                break;
+            case "lnOrE":
+                operatorState.isBool ? Button.ln(display1, display2) : Button.eToZ(display1, display2);
+                break;
+            case "conj": Button.conj(display1, display2);
+                break;
+            case "power": Button.basicOps("power", display1, display2);
+                break;
+            // case "exp": Button.exp(display1, display2);
+            //     break;
+            case "toggleOperators": Button.toggleOperators();
+                break;
+            case "e": Button.e(display1, display2);
+                break;
+            case "pi": Button.pi(display1, display2);
+                break;
+            case "equals": Button.equals(display1, display2, 15);
                 break;
         }
     });
