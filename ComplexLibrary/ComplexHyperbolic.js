@@ -135,5 +135,4 @@ export class ComplexHyperbolic {
     }
 }
 
-console.log(ComplexHyperbolic.sinh(new Complex("i")).toString());
 Object.seal(ComplexHyperbolic);
