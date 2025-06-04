@@ -3,6 +3,7 @@ import { ComplexMath } from '../ComplexLibrary/ComplexMath.js';
 import { ComplexPower } from '../ComplexLibrary/ComplexPower.js';
 import { ComplexLog } from '../ComplexLibrary/ComplexLog.js';
 import { ComplexTrigono } from '../ComplexLibrary/ComplexTrigono.js';
+import { ComplexHyperbolic } from '../ComplexLibrary/ComplexHyperbolic.js';
 
 export let state = {
     isDeg: true
@@ -12,8 +13,37 @@ export let operatorState = {
     isBool: true
 }
 
+export let operatorStateTrigono = {
+    isInverse: false,   // Controlled by the arrow button
+    isHyper: false      // Controlled by the hyp button
+};
+
 export function Eval(input) {
-    input = input.replace(/sqrt/gi, "SQRT")
+    input = input.replace(/arcsinh/gi, "ARCSINH")
+        .replace(/arccosh/gi, "ARCCOSH")
+        .replace(/arctanh/gi, "ARCTANH")
+        .replace(/arccsch/gi, "ARCCSCH")
+        .replace(/arcsech/gi, "ARCSECH")
+        .replace(/arccoth/gi, "ARCCOTH")
+        .replace(/arcsin/gi, "ARCSIN")
+        .replace(/arccos/gi, "ARCCOS")
+        .replace(/arctan/gi, "ARCTAN")
+        .replace(/arccsc/gi, "ARCCSC")
+        .replace(/arcsec/gi, "ARCSEC")
+        .replace(/arccot/gi, "ARCCOT")
+        .replace(/sinh/gi, "SINH")
+        .replace(/cosh/gi, "COSH")
+        .replace(/tanh/gi, "TANH")
+        .replace(/csch/gi, "CSCH")
+        .replace(/sech/gi, "SECH")
+        .replace(/coth/gi, "COTH")
+        .replace(/sin/gi, "SIN")
+        .replace(/cos/gi, "COS")
+        .replace(/tan/gi, "TAN")
+        .replace(/csch/gi, "CSC")
+        .replace(/sec/gi, "SEC")
+        .replace(/cot/gi, "COT")
+        .replace(/sqrt/gi, "SQRT")
         .replace(/root/gi, "ROOT")
         .replace(/cube/gi, "CUBE")
         .replace(/cbrt/gi, "CBRT")
@@ -26,25 +56,20 @@ export function Eval(input) {
         .replace(/sqr/gi, "SQR")
         .replace(/log/gi, "LOG");
 
-    console.log(input)
     const tokens = tokenize(input);
-    console.log("\n\n")
-    console.log(tokens)
     const postfix = infixToPostfix(tokens);
-    console.log("\n\n")
-    console.log(postfix)
     return evaluatePostfix(postfix);
 }
 
 function tokenize(expr) {
-    const regex = /(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?i?|[+\-*/^()]|SQRT|SQR|MOD|ARG|REC|LOG10|LN|CONJ|LOG|CUBE|CBRT|ROOT|i/g;
+    const regex = /(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?i?|[+\-*/^()]|SQRT|SQR|MOD|ARG|REC|LOG10|LN|CONJ|LOG|CUBE|CBRT|ROOT|ARCSINH|ARCCOSH|ARCTANH|ARCCSCH|ARCSECH|ARCCOTH|ARCSIN|ARCCOS|ARCTAN|ARCCSC|ARCSEC|ARCCOT|SINH|COSH|TANH|CSCH|SECH|COTH|SIN|COS|TAN|CSC|SEC|COT|i/g;
     const rawTokens = expr.match(regex);
     if (!rawTokens) return [];
 
     const tokens = [];
     for (let i = 0; i < rawTokens.length; i++) {
         const token = rawTokens[i];
-        if (token === '-' && (i === 0 || ["+", "-", "*", "/", "(", "^", "SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "LOG", "CUBE", "CBRT", "ROOT"].includes(rawTokens[i - 1]))) {
+        if (token === '-' && (i === 0 || ["+", "-", "*", "/", "(", "^", "SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "LOG", "CUBE", "CBRT", "ROOT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH", "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN", "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH", "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"].includes(rawTokens[i - 1]))) {
             tokens.push('u-'); // unary minus
         } else {
             tokens.push(token);
@@ -78,7 +103,10 @@ function infixToPostfix(tokens) {
 
     const functions = new Set([
         "SQRT", "MOD", "ARG", "REC", "SQR", "LOG10",
-        "LN", "CONJ", "CUBE", "CBRT"
+        "LN", "CONJ", "CUBE", "CBRT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH",
+        "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN",
+        "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH",
+        "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"
     ]);
 
     const output = [];
@@ -153,12 +181,15 @@ function evaluatePostfix(postfix) {
         } else if (token === 'u-') {
             const z = stack.pop();
             stack.push(ComplexMath.multiply(new Complex(-1, 0), z));
-        } else if (["SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "CUBE", "CBRT"].includes(token)) {
+        } else if (["SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "CUBE", "CBRT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH",
+            "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN",
+            "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH",
+            "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"].includes(token)) {
             const z = stack.pop();
             if (token === "MOD") stack.push(new Complex(z.getMod(), 0));
             if (token === "ARG") {
                 stack.push(new Complex(
-                    state.isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle(), 0
+                    state.isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle()
                 ));
             }
             if (token === "REC") stack.push(new Complex(z.getReciprocal(), 0));
@@ -169,6 +200,102 @@ function evaluatePostfix(postfix) {
             if (token === "LOG10") stack.push(ComplexLog.log10(z));
             if (token === "LN") stack.push(ComplexLog.ln(z));
             if (token === "CONJ") stack.push(z.getConjugate());
+            if (token === "SINH") {
+                stack.push(ComplexHyperbolic.sinh(z));
+            }
+            if (token === "COSH") {
+                stack.push(ComplexHyperbolic.cosh(z));
+            }
+            if (token === "TANH") {
+                stack.push(ComplexHyperbolic.tanh(z));
+            }
+            if (token === "COTH") {
+                stack.push(ComplexHyperbolic.coth(z));
+            }
+            if (token === "CSCH") {
+                stack.push(ComplexHyperbolic.csch(z));
+            }
+            if (token === "SECH") {
+                stack.push(ComplexHyperbolic.sech(z));
+            }
+            if (token === "ARCSINH") {
+                stack.push(ComplexHyperbolic.arcSinh(z));
+            }
+            if (token === "ARCCOSH") {
+                stack.push(ComplexHyperbolic.arcCosh(z));
+            }
+            if (token === "ARCTANH") {
+                stack.push(ComplexHyperbolic.arcTanh(z));
+            }
+            if (token === "ARCCOTH") {
+                stack.push(ComplexHyperbolic.arcCoth(z));
+            }
+            if (token === "ARCCSCH") {
+                stack.push(ComplexHyperbolic.arcCosech(z));
+            }
+            if (token === "ARCSECH") {
+                stack.push(ComplexHyperbolic.arcSech(z));
+            }
+            if (token === "SIN") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.sinDegrees(z) : ComplexTrigono.sin(z)
+                ));
+            }
+            if (token === "COS") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.cosDegrees(z) : ComplexTrigono.cos(z)
+                ));
+            }
+            if (token === "TAN") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.tanDegrees(z) : ComplexTrigono.tan(z)
+                ));
+            }
+            if (token === "COT") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.cotDegrees(z) : ComplexTrigono.cot(z)
+                ));
+            }
+            if (token === "CSC") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.cscDegrees(z) : ComplexTrigono.csc(z)
+                ));
+            }
+            if (token === "SEC") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.secDegrees(z) : ComplexTrigono.sec(z)
+                ));
+            }
+            if (token === "ARCSIN") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.arcSinDegrees(z) : ComplexTrigono.arcSin(z)
+                ));
+            }
+            if (token === "ARCCOS") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.arcCosDegrees(z) : ComplexTrigono.arCcos(z)
+                ));
+            }
+            if (token === "ARCTAN") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.arcTanDegrees(z) : ComplexTrigono.arcTan(z)
+                ));
+            }
+            if (token === "ARCCOT") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.arcCotDegrees(z) : ComplexTrigono.arcCot(z)
+                ));
+            }
+            if (token === "ARCCSC") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.arcCosecDegrees(z) : ComplexTrigono.arcCosec(z)
+                ));
+            }
+            if (token === "ARCSEC") {
+                stack.push(new Complex(
+                    state.isDeg ? ComplexTrigono.arcSecDegrees(z) : ComplexTrigono.arcSec(z)
+                ));
+            }
         }
     }
 
@@ -188,5 +315,3 @@ function parseComplex(token) {
         return new Complex(parseFloat(token), 0);
     }
 }
-
-console.log(Eval("(((sqr(3+4i)-(1-2i)*(2+i))/((rec(1+i))+mod(5-12i))))+i*arg(2+2i)"));

@@ -4,12 +4,14 @@
     box-sizing: border-box;
     overflow-x: hidden;   /* Hide horizontal scroll bar */
     overflow-y: hidden;   /* Hide horizontal scroll bar */
+    font-family: Helvetica, sans-serif;
 }
 
 :root {
     --bgColor: #222222;
     --textColor: white;
     --operatorsColor: #303030;
+    --dropdownColor: #303030;
     --numbersColor: #3a3a3a;
     --buttonActiveColor: #202020;
     --equalsColor: #FF3D00;
@@ -29,7 +31,7 @@
 .top-container {
     display: flex;
     width: 100%;
-    height: 35%;
+    height: 42%;
 }
 
 .header {
@@ -139,23 +141,117 @@
   background-color: rgb(52, 52, 52);
 }
 
-
 .input-btns {
     width: 78%;
     /* 75% of main's width */
     height: 70%;
     /* 75% of main's height */
     background-color: var(--bgColor);
+    position: relative;
 }
 
 .advOperations{
     width: 100%;
-    height: 12.5%;
+    height: 10%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.advOperations button{
+    width: 12%;
+    height: 85%;
+    margin-left: 0.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--textColor);
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 2vh;
+    cursor: pointer;
+    transition: all 0.05s ease-in-out;
+}
+
+.advOperations button:hover {
+    background-color: var(--operatorsColor);
+    border-width: 0px;
+    border-radius: 6px;
+    border-color: transparent;
+}
+
+.advOperations button:active {
+    background-color: var(--buttonActiveColor);
+    /* Color when clicked */
+    transform: scale(0.98);
+    /* Slight press effect */
+}
+
+#dropdownSymbol{
+    color: var(--textColor);
+    width: 15%;
+}
+
+#trigonoOps{
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: #2d2d2d;
+    border-width: 0px;
+    border-radius: 6px;
+    height: 28%;
+    width: 28%;
+    z-index: 10;
+    position: absolute;
+    top: 11%;
+    left: 0.8%;
+}
+
+#trigonoRow1,
+#trigonoRow2{
+    width: 100%;
+    height: 45%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#trigonoOps button{
+    color: var(--textColor);
+    background-color: var(--numbersColor);
+    width: 23.5%;
+    height: 95%;
+    font-size: 2.2vh;
+    border-width: 0px;
+    border-radius: 6px;
+    border-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.05s ease-in-out;
+    cursor: pointer;
+}
+
+#trigonotoggle > :last-child{
+    display: none;
+}
+
+#trigonoOps button:hover {
+    background-color: var(--operatorsColor);
+}
+
+#trigonoOps button:active {
+    background-color: var(--buttonActiveColor);
+    /* Color when clicked */
+    transform: scale(0.98);
+    /* Slight press effect */
 }
 
 .button-arranger {
     width: 100%;
-    height: 87.5%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -188,9 +284,12 @@
     cursor: pointer;
 }
 
+#exp,
+#clear-all{
+    font-size: 2.5vh;
+}
 #Brackets #openBracket {
     height: 30%;
-    font-family: sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana;
     font-size: 1.7vh;
     font-weight: 500;
     position: relative;
@@ -243,6 +342,11 @@
     /* Color when clicked */
     transform: scale(0.98);
     /* Slight press effect */
+}
+
+.icon {
+    width: 4.5vh;
+    /* Set SVG width */
 }
 
 #degOrRad {
@@ -305,4 +409,19 @@
 
 #toggleOperators > :last-child{
     display: none;
+}
+
+#trigonoRow1 button > :not(:first-child) {
+  display: none;
+}
+
+#trigonoRow2 button > :not(:first-child) {
+  display: none;
+}
+
+/* Hide .history-icon above 1050px */
+@media (min-width: 1050px) {
+    .history-icon {
+        display: none;
+    }
 }

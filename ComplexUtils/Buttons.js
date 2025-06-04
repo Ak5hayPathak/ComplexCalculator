@@ -1,4 +1,4 @@
-import { Eval, state, operatorState } from './ComplexEval.js';
+import { Eval, state, operatorState, operatorStateTrigono } from './ComplexEval.js';
 
 export class Button {
     static bracketCount = 0;
@@ -8,15 +8,21 @@ export class Button {
     static openBracketBtn = document.getElementById("openBracket");
 
     static updateDisplay(display1, display2) {
-        if (display1.value !== "" && !["+", "-", "*", "/", "(", "log", "root"].some(op => display1.value.endsWith(op))) {
-            if (this.equalFlag === false && display2.value !== "") {
+        // Case 1: display1 is non-empty and does not end with an operator
+        if (
+            display1.value !== "" &&
+            !["+", "-", "*", "/", "(", "^", "log", "root"].some(op => display1.value.endsWith(op))
+        ) {
+            if (!this.equalFlag && display2.value !== "") {
                 display1.value = display2.value;
                 display2.value = "";
                 this.equalFlag = true;
             }
             return;
         }
-        else if (display2 !== "") {
+
+        // Case 2: If display2 is non-empty, append it to display1
+        if (display2.value !== "") {
             display1.value += display2.value;
             display2.value = "";
             this.equalFlag = true;
@@ -36,6 +42,65 @@ export class Button {
             state.isDeg = true;
         }
     }
+
+    static updateTrigonoDisplay() {
+        const operatorPairs = [
+            document.getElementById("sin"),
+            document.getElementById("cos"),
+            document.getElementById("tan"),
+            document.getElementById("csc"),
+            document.getElementById("sec"),
+            document.getElementById("cot")
+        ];
+
+        const isInverse = operatorStateTrigono.isInverse;
+        const isHyper = operatorStateTrigono.isHyper;
+
+        for (const op of operatorPairs) {
+            const [std, inv, hyp, invhyp] = op.children;
+
+            std.style.display = "none";
+            inv.style.display = "none";
+            hyp.style.display = "none";
+            invhyp.style.display = "none";
+
+            if (!isInverse && !isHyper) std.style.display = "inline";
+            if (isInverse && !isHyper) inv.style.display = "inline";
+            if (!isInverse && isHyper) hyp.style.display = "inline";
+            if (isInverse && isHyper) invhyp.style.display = "inline";
+        }
+    }
+
+    static toggleInverseTrigono() {
+        const toggleButton = document.getElementById("trigonotoggle");
+
+        toggleButton.addEventListener('click', () => {
+            const isInverse = operatorStateTrigono.isInverse;
+
+            toggleButton.style.backgroundColor = isInverse ? "#3a3a3a" : "#FF3D00";
+            toggleButton.children[0].style.display = isInverse ? "inline" : "none"; // →
+            toggleButton.children[1].style.display = isInverse ? "none" : "inline"; // ←
+
+            operatorStateTrigono.isInverse = !isInverse;
+
+            this.updateTrigonoDisplay(); // Recalculate all displays
+        });
+    }
+
+    static toggleHyperTrigono() {
+        const toggleButton = document.getElementById("hyp");
+
+        toggleButton.addEventListener('click', () => {
+            const isHyper = operatorStateTrigono.isHyper;
+
+            toggleButton.style.backgroundColor = isHyper ? "#3a3a3a" : "#FF3D00";
+
+            operatorStateTrigono.isHyper = !isHyper;
+
+            this.updateTrigonoDisplay(); // Recalculate all displays
+        });
+    }
+
 
     static toggleOperators() {
         const toggleButton = document.getElementById("toggleOperators");
@@ -162,7 +227,7 @@ export class Button {
         if (this.bracketCount === 0) return;
 
         const invalidEndings = ["+", "-", "*", "/", "(", ".", "^", "log", "root"];
-        
+
         this.updateDisplay(display1, display2);
 
         if (!invalidEndings.some(op => display1.value.trim().endsWith(op))) {
@@ -171,7 +236,6 @@ export class Button {
             this.updateBracketDisplay(this.openBracketBtn);
         }
     }
-
 
     static updateBracketDisplay(openBracketBtn) {
         this.openBracketBtn.innerText = this.bracketCount === 0 ? "" : `${this.bracketCount}`;
@@ -190,7 +254,13 @@ export class Button {
                 const len = val.length;
 
                 // Handle known function patterns
-                const specialFuncs = ["mod(", "arg(", "rec(", "sqr(", "sqrt(", "conj(", "log10(", "ln(", "cube(", "cbrt(", "log", "root"];
+                const specialFuncs = ["mod(", "arg(", "rec(", "sqr(", "sqrt(", "conj(",
+                    "log10(", "ln(", "cube(", "cbrt(", "log", "root",
+                    "sin(", "cos(", "tan(", "csc(", "sec(", "cot(",
+                    "arcsin(", "arccos(", "arctan(", "arccsc(", "arcsec(", "arccot(",
+                    "sinh(", "cosh(", "tanh(", "csch(", "sech(", "coth(",
+                    "arcsinh(", "arccosh(", "arctanh(", "arccsch(", "arcsech(", "arccoth("];
+
                 const matchedFunc = specialFuncs.find(func => val.endsWith(func));
 
                 if (matchedFunc) {
@@ -442,7 +512,7 @@ export class Button {
         if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") return;
         if (display2.value.endsWith(".") || display1.value.endsWith(".") || display1.value.endsWith("E")) return;
 
-        if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")"].some(op => display2.value.endsWith(op))) {
+        if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")", "i"].some(op => display2.value.endsWith(op))) {
             this.updateDisplay(display1, display2);
             display1.value += `*(${constant})`;
         }
@@ -577,9 +647,112 @@ export class Button {
         this.insertFunction(display1, display2, "ln");
     }
 
-
     static conj(display1, display2) {
         this.insertFunction(display1, display2, "conj");
+    }
+
+    static sin(display1, display2) {
+        this.insertFunction(display1, display2, "sin");
+    }
+    static cos(display1, display2) {
+        this.insertFunction(display1, display2, "cos");
+    }
+    static tan(display1, display2) {
+        this.insertFunction(display1, display2, "tan");
+    }
+    static csc(display1, display2) {
+        this.insertFunction(display1, display2, "csc");
+    }
+    static sec(display1, display2) {
+        this.insertFunction(display1, display2, "sec");
+    }
+    static cot(display1, display2) {
+        this.insertFunction(display1, display2, "cot");
+    }
+
+
+    static arcsin(display1, display2) {
+        this.insertFunction(display1, display2, "arcsin");
+    }
+    static arccos(display1, display2) {
+        this.insertFunction(display1, display2, "arccos");
+    }
+    static arctan(display1, display2) {
+        this.insertFunction(display1, display2, "arctan");
+    }
+    static arccsc(display1, display2) {
+        this.insertFunction(display1, display2, "arccsc");
+    }
+    static arcsec(display1, display2) {
+        this.insertFunction(display1, display2, "arcsec");
+    }
+    static arccot(display1, display2) {
+        this.insertFunction(display1, display2, "arccot");
+    }
+
+    static sinh(display1, display2) {
+        this.insertFunction(display1, display2, "sinh");
+    }
+    static cosh(display1, display2) {
+        this.insertFunction(display1, display2, "cosh");
+    }
+    static tanh(display1, display2) {
+        this.insertFunction(display1, display2, "tanh");
+    }
+    static csch(display1, display2) {
+        this.insertFunction(display1, display2, "csch");
+    }
+    static sech(display1, display2) {
+        this.insertFunction(display1, display2, "sech");
+    }
+    static coth(display1, display2) {
+        this.insertFunction(display1, display2, "coth");
+    }
+
+    static arcsinh(display1, display2) {
+        this.insertFunction(display1, display2, "arcsinh");
+    }
+    static arccosh(display1, display2) {
+        this.insertFunction(display1, display2, "arccosh");
+    }
+    static arctanh(display1, display2) {
+        this.insertFunction(display1, display2, "arctanh");
+    }
+    static arccsch(display1, display2) {
+        this.insertFunction(display1, display2, "arccsch");
+    }
+    static arcsech(display1, display2) {
+        this.insertFunction(display1, display2, "arcsech");
+    }
+    static arccoth(display1, display2) {
+        this.insertFunction(display1, display2, "arccoth");
+    }
+
+    static toggleWithOutsideClick(triggerId, targetId, displayMode = 'block', activeBg = '', defaultBg = '') {
+        const trigger = document.querySelector(triggerId);
+        const target = document.querySelector(targetId);
+
+        if (!trigger || !target) return;
+
+        // Toggle display and background color on trigger click
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = target.style.display === displayMode;
+
+            target.style.display = isVisible ? 'none' : displayMode;
+            trigger.style.backgroundColor = isVisible ? defaultBg : activeBg;
+        });
+
+        // Prevent target clicks from closing the panel
+        target.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Clicking anywhere else hides the target and resets background
+        document.addEventListener('click', () => {
+            target.style.display = 'none';
+            trigger.style.backgroundColor = defaultBg;
+        });
     }
 
     static exp(display1, display2) {
