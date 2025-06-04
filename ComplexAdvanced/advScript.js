@@ -39,7 +39,7 @@ document.addEventListener("keydown", (event) => {
             break;
         case "d": Button.toggleDegRad();
             break;
-        case "c": Button.conj(display1, display2);
+        case "x": Button.conj(display1, display2);
             break;
         case "e": Button.e(display1, display2);
             break;
@@ -130,8 +130,8 @@ buttons.forEach(button => {
                 break;
             case "power": Button.basicOps("power", display1, display2);
                 break;
-            case "exp": Button.exp(display1, display2);
-                break;
+            // case "exp": Button.exp(display1, display2);
+            //     break;
             case "toggleOperators": Button.toggleOperators();
                 break;
             case "e": Button.e(display1, display2);
@@ -148,6 +148,8 @@ Button.toggleWithOutsideClick('#trigono', '#trigonoOps', 'flex', "#202020", "tra
 
 Button.toggleInverseTrigono();
 Button.toggleHyperTrigono();
+
+Button.toggleWithOutsideClick('#constants', '#consts', 'flex', "#202020", "transparent");
 
 
 const trigButtons = document.querySelectorAll(".trigButton");
@@ -194,6 +196,62 @@ trigButtons.forEach((button) => {
                 isHyper
                     ? isInverse ? Button.arccoth(display1, display2) : Button.coth(display1, display2)
                     : isInverse ? Button.arccot(display1, display2) : Button.cot(display1, display2);
+                break;
+        }
+    });
+});
+
+const constButtons = document.querySelectorAll(".constButton");
+
+constButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const val = button.id;
+
+        switch (val) {
+            case "omega":
+                Button.omega(display1, display2);
+                break;
+            case "omega_sqr":
+                Button.omega_sqr(display1, display2);
+                break;
+            case "piConst":
+                Button.pi(display1, display2);
+                break;
+            case "eConst":
+                Button.e(display1, display2);
+                break;
+            case "i":
+                Button.iota(display1, display2);
+                break;
+            case "EulerMascheroni":
+                Button.EulerMascheroni(display1, display2);
+                break;
+            case "GoldenRatio":
+                Button.Golden_ratio(display1, display2);
+                break;
+            case "Catalan":
+                Button.Catalan(display1, display2);
+                break;
+            case "Apery":
+                Button.Apery(display1, display2);
+                break;
+            case "Feigenbaum1":
+                Button.Feigenbaum1(display1, display2);
+                break;
+            case "Feigenbaum2":
+                Button.Feigenbaum2(display1, display2);
+                break;
+            case "Khinchin":
+                Button.Khinchin(display1, display2);
+                break;
+            case "Liouville":
+                Button.Liouville(display1, display2);
+                break;
+            case "PlasticNumber":
+                Button.PlasticNumber(display1, display2);
+                break;
+            case "lnNegOne":
+                Button.lnNegOne(display1, display2);
                 break;
         }
     });

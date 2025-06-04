@@ -529,6 +529,57 @@ export class Button {
         this.insertConstant("3.1415926535897932384626433832795", display1, display2);
     }
 
+    static omega(display1, display2) {
+        this.insertConstant("-0.5+0.8660254037844386467637231707529i", display1, display2);
+    }
+
+    static omega_sqr(display1, display2) {
+        this.insertConstant("-0.5-0.8660254037844386467637231707529i", display1, display2);
+    }
+
+    static EulerMascheroni(display1, display2) {
+        this.insertConstant("0.5772156649015328606065120900824", display1, display2);
+    }
+
+    static Golden_ratio(display1, display2) {
+        this.insertConstant("1.6180339887498948482045868343656", display1, display2);
+    }
+
+    static Catalan(display1, display2) {
+        this.insertConstant("0.9159655941772190150546035149324", display1, display2);
+    }
+
+    static Apery(display1, display2) {
+        this.insertConstant("1.2020569031595942853997381615114", display1, display2);
+    }
+
+    static Feigenbaum1(display1, display2) {
+        this.insertConstant("4.6692016091029906718532038204662", display1, display2);
+    }
+
+    static Feigenbaum2(display1, display2) {
+        this.insertConstant("2.5029078750958928222839028732182", display1, display2);
+    }
+
+    static Khinchin(display1, display2) {
+        this.insertConstant("2.6854520010653064453097148354818", display1, display2);
+    }
+
+    static Liouville(display1, display2) {
+        // Liouville's constant approximated to 31 decimals
+        this.insertConstant("0.1100010000000000000000000000000", display1, display2);
+    }
+
+    static PlasticNumber(display1, display2) {
+        this.insertConstant("1.3247179572447460259609088544781", display1, display2);
+    }
+
+    static lnNegOne(display1, display2) {
+        // ln(-1) principal value = i * pi
+        this.insertConstant("3.1415926535897932384626433832795i", display1, display2);
+    }
+
+
     static equals(display1, display2, precision) {
         if (!this.equalFlag) return;
 

@@ -221,7 +221,7 @@
     color: var(--textColor);
     background-color: var(--numbersColor);
     width: 23.5%;
-    height: 95%;
+    height: 97%;
     font-size: 2.2vh;
     border-width: 0px;
     border-radius: 6px;
@@ -243,6 +243,57 @@
 }
 
 #trigonoOps button:active {
+    background-color: var(--buttonActiveColor);
+    /* Color when clicked */
+    transform: scale(0.98);
+    /* Slight press effect */
+}
+
+#consts{
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: #2d2d2d;
+    border-width: 0px;
+    border-radius: 6px;
+    height: 38%;
+    width: 38%;
+    z-index: 10;
+    position: absolute;
+    top: 11%;
+    left: 11%;
+}
+
+#constRow1, #constRow2, #constRow3{
+    width: 100%;
+    height: 33%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#consts button{
+    color: var(--textColor);
+    background-color: var(--numbersColor);
+    width: 18.5%;
+    height: 95%;
+    font-size: 2.2vh;
+    border-width: 0px;
+    border-radius: 6px;
+    border-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.05s ease-in-out;
+    cursor: pointer;
+}
+
+#consts button:hover {
+    background-color: var(--operatorsColor);
+}
+
+#consts button:active {
     background-color: var(--buttonActiveColor);
     /* Color when clicked */
     transform: scale(0.98);
