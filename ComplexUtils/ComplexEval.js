@@ -186,116 +186,137 @@ function evaluatePostfix(postfix) {
             "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH",
             "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"].includes(token)) {
             const z = stack.pop();
-            if (token === "MOD") stack.push(new Complex(z.getMod(), 0));
-            if (token === "ARG") {
-                stack.push(new Complex(
-                    state.isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle()
-                ));
+            switch (token) {
+                case "MOD":
+                    stack.push(new Complex(z.getMod(), 0));
+                    break;
+                case "ARG":
+                    stack.push(new Complex(
+                        state.isDeg ? z.getStandardAngle() * (180 / Math.PI) : z.getStandardAngle()
+                    ));
+                    break;
+                case "REC":
+                    stack.push(new Complex(z.getReciprocal(), 0));
+                    break;
+                case "SQR":
+                    stack.push(ComplexPower.power(z, 2));
+                    break;
+                case "CUBE":
+                    stack.push(ComplexPower.power(z, 3));
+                    break;
+                case "SQRT":
+                    stack.push(ComplexPower.sqrt(z));
+                    break;
+                case "CBRT":
+                    stack.push(ComplexPower.cbrt(z));
+                    break;
+                case "LOG10":
+                    stack.push(ComplexLog.log10(z));
+                    break;
+                case "LN":
+                    stack.push(ComplexLog.ln(z));
+                    break;
+                case "CONJ":
+                    stack.push(z.getConjugate());
+                    break;
+                case "SINH":
+                    stack.push(ComplexHyperbolic.sinh(z));
+                    break;
+                case "COSH":
+                    stack.push(ComplexHyperbolic.cosh(z));
+                    break;
+                case "TANH":
+                    stack.push(ComplexHyperbolic.tanh(z));
+                    break;
+                case "COTH":
+                    stack.push(ComplexHyperbolic.coth(z));
+                    break;
+                case "CSCH":
+                    stack.push(ComplexHyperbolic.csch(z));
+                    break;
+                case "SECH":
+                    stack.push(ComplexHyperbolic.sech(z));
+                    break;
+                case "ARCSINH":
+                    stack.push(ComplexHyperbolic.arcSinh(z));
+                    break;
+                case "ARCCOSH":
+                    stack.push(ComplexHyperbolic.arcCosh(z));
+                    break;
+                case "ARCTANH":
+                    stack.push(ComplexHyperbolic.arcTanh(z));
+                    break;
+                case "ARCCOTH":
+                    stack.push(ComplexHyperbolic.arcCoth(z));
+                    break;
+                case "ARCCSCH":
+                    stack.push(ComplexHyperbolic.arcCosech(z));
+                    break;
+                case "ARCSECH":
+                    stack.push(ComplexHyperbolic.arcSech(z));
+                    break;
+                case "SIN":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.sinDegrees(z) : ComplexTrigono.sin(z)
+                    ));
+                    break;
+                case "COS":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.cosDegrees(z) : ComplexTrigono.cos(z)
+                    ));
+                    break;
+                case "TAN":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.tanDegrees(z) : ComplexTrigono.tan(z)
+                    ));
+                    break;
+                case "COT":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.cotDegrees(z) : ComplexTrigono.cot(z)
+                    ));
+                    break;
+                case "CSC":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.cscDegrees(z) : ComplexTrigono.csc(z)
+                    ));
+                    break;
+                case "SEC":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.secDegrees(z) : ComplexTrigono.sec(z)
+                    ));
+                    break;
+                case "ARCSIN":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.arcSinDegrees(z) : ComplexTrigono.arcSin(z)
+                    ));
+                    break;
+                case "ARCCOS":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.arcCosDegrees(z) : ComplexTrigono.arcCos(z)
+                    ));
+                    break;
+                case "ARCTAN":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.arcTanDegrees(z) : ComplexTrigono.arcTan(z)
+                    ));
+                    break;
+                case "ARCCOT":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.arcCotDegrees(z) : ComplexTrigono.arcCot(z)
+                    ));
+                    break;
+                case "ARCCSC":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.arcCosecDegrees(z) : ComplexTrigono.arcCosec(z)
+                    ));
+                    break;
+                case "ARCSEC":
+                    stack.push(new Complex(
+                        state.isDeg ? ComplexTrigono.arcSecDegrees(z) : ComplexTrigono.arcSec(z)
+                    ));
+                    break;
             }
-            if (token === "REC") stack.push(new Complex(z.getReciprocal(), 0));
-            if (token === "SQR") stack.push(ComplexPower.power(z, 2));
-            if (token === "CUBE") stack.push(ComplexPower.power(z, 3));
-            if (token === "SQRT") stack.push(ComplexPower.sqrt(z));
-            if (token === "CBRT") stack.push(ComplexPower.cbrt(z));
-            if (token === "LOG10") stack.push(ComplexLog.log10(z));
-            if (token === "LN") stack.push(ComplexLog.ln(z));
-            if (token === "CONJ") stack.push(z.getConjugate());
-            if (token === "SINH") {
-                stack.push(ComplexHyperbolic.sinh(z));
-            }
-            if (token === "COSH") {
-                stack.push(ComplexHyperbolic.cosh(z));
-            }
-            if (token === "TANH") {
-                stack.push(ComplexHyperbolic.tanh(z));
-            }
-            if (token === "COTH") {
-                stack.push(ComplexHyperbolic.coth(z));
-            }
-            if (token === "CSCH") {
-                stack.push(ComplexHyperbolic.csch(z));
-            }
-            if (token === "SECH") {
-                stack.push(ComplexHyperbolic.sech(z));
-            }
-            if (token === "ARCSINH") {
-                stack.push(ComplexHyperbolic.arcSinh(z));
-            }
-            if (token === "ARCCOSH") {
-                stack.push(ComplexHyperbolic.arcCosh(z));
-            }
-            if (token === "ARCTANH") {
-                stack.push(ComplexHyperbolic.arcTanh(z));
-            }
-            if (token === "ARCCOTH") {
-                stack.push(ComplexHyperbolic.arcCoth(z));
-            }
-            if (token === "ARCCSCH") {
-                stack.push(ComplexHyperbolic.arcCosech(z));
-            }
-            if (token === "ARCSECH") {
-                stack.push(ComplexHyperbolic.arcSech(z));
-            }
-            if (token === "SIN") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.sinDegrees(z) : ComplexTrigono.sin(z)
-                ));
-            }
-            if (token === "COS") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.cosDegrees(z) : ComplexTrigono.cos(z)
-                ));
-            }
-            if (token === "TAN") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.tanDegrees(z) : ComplexTrigono.tan(z)
-                ));
-            }
-            if (token === "COT") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.cotDegrees(z) : ComplexTrigono.cot(z)
-                ));
-            }
-            if (token === "CSC") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.cscDegrees(z) : ComplexTrigono.csc(z)
-                ));
-            }
-            if (token === "SEC") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.secDegrees(z) : ComplexTrigono.sec(z)
-                ));
-            }
-            if (token === "ARCSIN") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.arcSinDegrees(z) : ComplexTrigono.arcSin(z)
-                ));
-            }
-            if (token === "ARCCOS") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.arcCosDegrees(z) : ComplexTrigono.arCcos(z)
-                ));
-            }
-            if (token === "ARCTAN") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.arcTanDegrees(z) : ComplexTrigono.arcTan(z)
-                ));
-            }
-            if (token === "ARCCOT") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.arcCotDegrees(z) : ComplexTrigono.arcCot(z)
-                ));
-            }
-            if (token === "ARCCSC") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.arcCosecDegrees(z) : ComplexTrigono.arcCosec(z)
-                ));
-            }
-            if (token === "ARCSEC") {
-                stack.push(new Complex(
-                    state.isDeg ? ComplexTrigono.arcSecDegrees(z) : ComplexTrigono.arcSec(z)
-                ));
-            }
+
         }
     }
 

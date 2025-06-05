@@ -74,6 +74,14 @@ export class Button {
     static toggleInverseTrigono() {
         const toggleButton = document.getElementById("trigonotoggle");
 
+        toggleButton.addEventListener("mouseenter", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isInverse ? "#cf3000" : "#303030"; // Add hover effect
+        });
+
+        toggleButton.addEventListener("mouseleave", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isInverse ? "#FF3D00" : "#3a3a3a";; // Revert to default
+        });
+
         toggleButton.addEventListener('click', () => {
             const isInverse = operatorStateTrigono.isInverse;
 
@@ -90,6 +98,14 @@ export class Button {
     static toggleHyperTrigono() {
         const toggleButton = document.getElementById("hyp");
 
+        toggleButton.addEventListener("mouseenter", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isHyper ? "#cf3000" : "#303030"; // Add hover effect
+        });
+
+        toggleButton.addEventListener("mouseleave", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isHyper ? "#FF3D00" : "#3a3a3a";; // Revert to default
+        });
+
         toggleButton.addEventListener('click', () => {
             const isHyper = operatorStateTrigono.isHyper;
 
@@ -104,6 +120,27 @@ export class Button {
 
     static toggleOperators() {
         const toggleButton = document.getElementById("toggleOperators");
+
+        toggleButton.addEventListener("mouseenter", () => {
+            const currentColor = toggleButton.style.backgroundColor;
+
+            if (currentColor === "rgb(255, 61, 0)" || currentColor === "#FF3D00") {
+                toggleButton.style.backgroundColor = "#cf3000"; // Darker orange
+            } else if (currentColor === "rgb(48, 48, 48)" || currentColor === "#303030") {
+                toggleButton.style.backgroundColor = "#3a3a3a"; // Darker grey
+            }
+        });
+
+        toggleButton.addEventListener("mouseleave", () => {
+            const currentColor = toggleButton.style.backgroundColor;
+
+            // Revert based on hover color
+            if (currentColor === "rgb(207, 48, 0)" || currentColor === "#cf3000") {
+                toggleButton.style.backgroundColor = "#FF3D00"; // Original orange
+            } else if (currentColor === "rgb(58, 58, 58)" || currentColor === "#3a3a3a") {
+                toggleButton.style.backgroundColor = "#303030"; // Original grey
+            }
+        });
 
         const operatorPairs = [
             document.getElementById("sqrOrCube"),
@@ -254,12 +291,11 @@ export class Button {
                 const len = val.length;
 
                 // Handle known function patterns
-                const specialFuncs = ["mod(", "arg(", "rec(", "sqr(", "sqrt(", "conj(",
-                    "log10(", "ln(", "cube(", "cbrt(", "log", "root",
-                    "sin(", "cos(", "tan(", "csc(", "sec(", "cot(",
-                    "arcsin(", "arccos(", "arctan(", "arccsc(", "arcsec(", "arccot(",
+                const specialFuncs = ["arcsin(", "arccos(", "arctan(", "arccsc(", "arcsec(", "arccot(",
                     "sinh(", "cosh(", "tanh(", "csch(", "sech(", "coth(",
-                    "arcsinh(", "arccosh(", "arctanh(", "arccsch(", "arcsech(", "arccoth("];
+                    "arcsinh(", "arccosh(", "arctanh(", "arccsch(", "arcsech(", "arccoth(", "mod(", "arg(", "rec(", "sqr(", "sqrt(", "conj(",
+                    "log10(", "ln(", "cube(", "cbrt(", "log", "root",
+                    "sin(", "cos(", "tan(", "csc(", "sec(", "cot("];
 
                 const matchedFunc = specialFuncs.find(func => val.endsWith(func));
 
@@ -530,11 +566,11 @@ export class Button {
     }
 
     static omega(display1, display2) {
-        this.insertConstant("-0.5+0.8660254037844386467637231707529i", display1, display2);
+        this.insertConstant("(-0.5+0.8660254037844386467637231707529i)", display1, display2);
     }
 
     static omega_sqr(display1, display2) {
-        this.insertConstant("-0.5-0.8660254037844386467637231707529i", display1, display2);
+        this.insertConstant("(-0.5-0.8660254037844386467637231707529i)", display1, display2);
     }
 
     static EulerMascheroni(display1, display2) {
@@ -784,6 +820,14 @@ export class Button {
         const target = document.querySelector(targetId);
 
         if (!trigger || !target) return;
+
+        trigger.addEventListener("mouseenter", () => {
+            trigger.style.backgroundColor = "#303030"; // Add hover effect
+        });
+
+        trigger.addEventListener("mouseleave", () => {
+            trigger.style.backgroundColor = ""; // Revert to default
+        });
 
         // Toggle display and background color on trigger click
         trigger.addEventListener('click', (e) => {
