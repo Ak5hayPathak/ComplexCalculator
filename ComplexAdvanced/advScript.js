@@ -130,8 +130,8 @@ buttons.forEach(button => {
                 break;
             case "power": Button.basicOps("power", display1, display2);
                 break;
-            // case "exp": Button.exp(display1, display2);
-            //     break;
+            case "exp": Button.exp(display1, display2);
+                break;
             case "toggleOperators": Button.toggleOperators();
                 break;
             case "e": Button.e(display1, display2);

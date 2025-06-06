@@ -170,6 +170,11 @@ export class Button {
         const isDisplay2Valid = display2.value !== "" && display2.value !== "Invalid";
         const isEndWithEqual = display1.value.endsWith("=");
 
+        if (/[eE][+-]?$/.test(display2.value) || (/[eE][+-]?$/.test(display1.value) && display2.value === "")) {
+            return;
+        }
+
+
         if (isEndWithEqual && isDisplay2Valid) {
             display1.value = "(";
             this.bracketCount++;
@@ -226,6 +231,10 @@ export class Button {
     static leftBracket(display1, display2) {
         const isDisplay2Invalid = display2.value === "" || display2.value === "Invalid";
         const endsWithOperator = ["+", "-", "*", "^", "/", "(", "log", "root", "."].some(op => display1.value.endsWith(op));
+
+        if (/[eE][+-]?$/.test(display2.value) || (/[eE][+-]?$/.test(display1.value) && display2.value === "")) {
+            return;
+        }
 
         // Case: after evaluation (e.g. after "=")
         if (display1.value.endsWith("=")) {
@@ -339,6 +348,11 @@ export class Button {
             return;
         }
 
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
+        }
+
+
         // Handle case when last operation was '='
         if (display1.value.endsWith("=")) {
             display1.value = "";
@@ -361,19 +375,15 @@ export class Button {
 
     static numVal(numValue, display1, display2) {
         // Prevent input after evaluation or on invalid state
-        if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
-            return;
-        }
+        if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") return;
+        if (/[eE]$/.test(display2.value)) return;
+        if (/[eE]$/.test(display1.value)) return;
 
         // Limit digit count to 32
-        if (this.countDigits(display2.value + numValue) > 50) {
-            return;
-        }
+        if (this.countDigits(display2.value + numValue) > 50) return;
 
         // Avoid leading zeroes like "00", "000", etc.
-        if (numValue === "0" && (display2.value === "" || display2.value === "0")) {
-            return;
-        }
+        if (numValue === "0" && (display2.value === "" || display2.value === "0")) return;
 
         // Append number to empty display
         if (display2.value === "") {
@@ -419,15 +429,36 @@ export class Button {
 
         const operator = getOperator(val);
 
-        if (display2.value.endsWith("E")) {
+        if (/[eE]$/.test(display1.value)) {
             if (val === "subtract") {
-                display2.value += "-0";
-            }
-            else if (val === "add") {
-                display2.value += "+0";
+                display1.value += "-";
+            } else if (val === "add") {
+                display1.value += "+";
             }
             return;
         }
+
+        if (/[eE]$/.test(display2.value)) {
+            if (val === "subtract") {
+                display2.value += "-";
+            } else if (val === "add") {
+                display2.value += "+";
+            }
+            return;
+        }
+        else if (/[eE][+-]$/.test(display2.value)) {
+            if (val === "subtract" || val === "add") {
+                display2.value = display2.value.slice(0, -1) + operator;
+            }
+            return;
+        }
+        else if (/[eE][+-]$/.test(display1.value) && display2.value === "") {
+            if (val === "subtract" || val === "add") {
+                display1.value = display1.value.slice(0, -1) + operator;
+            }
+            return;
+        }
+
 
         // If display1 ends with '(', allow only '-' for negative numbers
         if (display1.value.endsWith("(") && display2.value === "") {
@@ -476,9 +507,12 @@ export class Button {
         const d1 = display1.value;
         const d2 = display2.value;
 
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
+        }
+
         if ((d1.endsWith("=") && d2 === "") || d2 === "Invalid") return;
 
-        const lastToken1 = d1.split(/[\+\-\*\/\(\)]/).pop();
         const lastToken2 = d2.split(/[\+\-\*\/\(\)]/).pop();
 
         // Start a new number with "0." if the expression just ended with an operator
@@ -503,9 +537,13 @@ export class Button {
         // Prevent multiple consecutive dots
         if (d2.endsWith(".")) return;
 
-        // Prevent decimal inside incomplete exponent like "2E+", "3e-", etc.
+        // Prevent decimal inside incomplete exponent like "2E+", "3e-"
         const incompleteExponentPattern = /[eE][+\-]?$/;
         if (incompleteExponentPattern.test(lastToken2)) return;
+
+        // Prevent decimal after a complete exponent (e.g., "2E+2")
+        const completeExponentPattern = /[eE][+\-]?\d+$/;
+        if (completeExponentPattern.test(d2)) return;
 
         // Prevent multiple dots in the current number segment
         if (lastToken2.includes(".")) return;
@@ -521,6 +559,10 @@ export class Button {
         if ((expr.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
             return;
         }
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
+        }
+
         if (expr !== "" && !expr.endsWith("=")) {
 
             if ((["+", "-", "*", "/", "(", ".", "E", "^", "log", "root"].some(op => expr.endsWith(op)))) {
@@ -547,6 +589,9 @@ export class Button {
     static insertConstant(constant, display1, display2) {
         if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") return;
         if (display2.value.endsWith(".") || display1.value.endsWith(".") || display1.value.endsWith("E")) return;
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
+        }
 
         if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")", "i"].some(op => display2.value.endsWith(op))) {
             this.updateDisplay(display1, display2);
@@ -615,7 +660,6 @@ export class Button {
         this.insertConstant("3.1415926535897932384626433832795i", display1, display2);
     }
 
-
     static equals(display1, display2, precision) {
         if (!this.equalFlag) return;
 
@@ -644,8 +688,8 @@ export class Button {
             } catch (e) {
                 display2.value = "Invalid";
             }
+            this.equalFlag = false;
         }
-        this.equalFlag = false;
     }
 
     static insertFunction(display1, display2, funcString, needsMultiply = true, addBracket = true) {
@@ -653,6 +697,10 @@ export class Button {
             this.bracketCount++;
             this.updateBracketDisplay(this.openBracketBtn);
         };
+
+        if (/[eE][+-]?$/.test(display2.value) || (/[eE][+-]?$/.test(display1.value) && display2.value === "")) {
+            return;
+        }
 
         const endsWithOperator = (str) => {
             return ["+", "-", "*", "/", "^", "(", ".", "log", "root"].some(op => str.endsWith(op));
@@ -815,21 +863,28 @@ export class Button {
         this.insertFunction(display1, display2, "arccoth");
     }
 
-    static toggleWithOutsideClick(triggerId, targetId, displayMode = 'block', activeBg = '', defaultBg = '') {
+    static toggleWithOutsideClick(triggerId, targetId, displayMode = 'block', activeBg = '#202020', defaultBg = '') {
         const trigger = document.querySelector(triggerId);
         const target = document.querySelector(targetId);
 
         if (!trigger || !target) return;
 
+        // Hover effect
         trigger.addEventListener("mouseenter", () => {
-            trigger.style.backgroundColor = "#303030"; // Add hover effect
+            // Only apply hover color if not active
+            if (target.style.display !== displayMode) {
+                trigger.style.backgroundColor = "#303030";
+            }
         });
 
         trigger.addEventListener("mouseleave", () => {
-            trigger.style.backgroundColor = ""; // Revert to default
+            // Only revert if not active
+            if (target.style.display !== displayMode) {
+                trigger.style.backgroundColor = defaultBg;
+            }
         });
 
-        // Toggle display and background color on trigger click
+        // Click to toggle
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
             const isVisible = target.style.display === displayMode;
@@ -838,12 +893,12 @@ export class Button {
             trigger.style.backgroundColor = isVisible ? defaultBg : activeBg;
         });
 
-        // Prevent target clicks from closing the panel
+        // Prevent closing when clicking inside the target
         target.addEventListener('click', (e) => {
             e.stopPropagation();
         });
 
-        // Clicking anywhere else hides the target and resets background
+        // Click outside to close
         document.addEventListener('click', () => {
             target.style.display = 'none';
             trigger.style.backgroundColor = defaultBg;
@@ -851,8 +906,12 @@ export class Button {
     }
 
     static exp(display1, display2) {
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
+        }
+
         if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].some(op => display2.value.endsWith(op))) {
-            display2.value += "E+0";
+            display2.value += "e+";
         }
     }
 
