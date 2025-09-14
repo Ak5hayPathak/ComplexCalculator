@@ -191,7 +191,8 @@ export class Complex {
         let formattedMod = mod.toFixed(precision);
         let formattedAngle = angle.toFixed(precision);
 
-        console.log(`${formattedMod}(cos(${formattedAngle}) ${angle < 0 ? "- i sin(" : "+ i sin("}${Math.abs(formattedAngle)}))`);
+        let polar = `${formattedMod}*(cos(${formattedAngle})${angle < 0 ? "- i * sin(" : "+ i * sin("}${Math.abs(formattedAngle)}))`;
+        return polar;
     }
 
     toString(precision = 3) {
@@ -236,4 +237,5 @@ export class Complex {
     static get LOG_OF_NEG_UNITY() { return Object.freeze(new Complex(0, Math.PI)); }
     static get LOG_OF_IOTA() { return Object.freeze(new Complex(0, Math.PI / 2.0)); }
     static get LOG_OF_OMEGA() { return Object.freeze(new Complex(0, 2 * Math.PI / 3.0)); }
+
 }

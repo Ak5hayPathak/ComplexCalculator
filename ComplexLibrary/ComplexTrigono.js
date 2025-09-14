@@ -203,6 +203,6 @@ export class ComplexTrigono {
     }
 }
 
-console.log(ComplexTrigono.arcCos(0.5).toString());
+// console.log(ComplexTrigono.arcCos(0.5).toString());
 
 Object.seal(ComplexTrigono);

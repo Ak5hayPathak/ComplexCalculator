@@ -40,7 +40,7 @@ export function Eval(input) {
         .replace(/sin/gi, "SIN")
         .replace(/cos/gi, "COS")
         .replace(/tan/gi, "TAN")
-        .replace(/csch/gi, "CSC")
+        .replace(/csc/gi, "CSC")
         .replace(/sec/gi, "SEC")
         .replace(/cot/gi, "COT")
         .replace(/sqrt/gi, "SQRT")
@@ -156,7 +156,6 @@ function infixToPostfix(tokens) {
 
     return output;
 }
-
 
 function evaluatePostfix(postfix) {
     const stack = [];
@@ -277,7 +276,7 @@ function evaluatePostfix(postfix) {
                     break;
                 case "CSC":
                     stack.push(new Complex(
-                        state.isDeg ? ComplexTrigono.cscDegrees(z) : ComplexTrigono.csc(z)
+                        state.isDeg ? ComplexTrigono.cosecDegrees(z) : ComplexTrigono.cosec(z)
                     ));
                     break;
                 case "SEC":
@@ -336,3 +335,5 @@ function parseComplex(token) {
         return new Complex(parseFloat(token), 0);
     }
 }
+
+// console.log(new Complex("2+3i").printPolar(12));

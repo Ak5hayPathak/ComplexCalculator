@@ -7,162 +7,223 @@ export class Button {
 
     static openBracketBtn = document.getElementById("openBracket");
 
-    static updateDisplay(display1, display2) {
-        // Case 1: display1 is non-empty and does not end with an operator
-        if (
-            display1.value !== "" &&
-            !["+", "-", "*", "/", "(", "^", "log", "root"].some(op => display1.value.endsWith(op))
-        ) {
-            if (!this.equalFlag && display2.value !== "") {
-                display1.value = display2.value;
-                display2.value = "";
-                this.equalFlag = true;
-            }
+    static numVal(numValue, display1, display2) {
+        // Prevent input after evaluation or on invalid state
+        if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") return;
+        if (/[eE]$/.test(display2.value)) return;
+        if (/[eE]$/.test(display1.value)) return;
+
+        // Limit digit count to 32
+        if (this.countDigits(display2.value + numValue) > 50) return;
+
+        // Avoid leading zeroes like "00", "000", etc.
+        if (numValue === "0" && (display2.value === "" || display2.value === "0")) return;
+
+        if((numValue === "0") && ((/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)))) return;
+        // Append number to empty display
+        if (display2.value === "") {
+            display2.value = numValue;
             return;
         }
 
-        // Case 2: If display2 is non-empty, append it to display1
-        if (display2.value !== "") {
-            display1.value += display2.value;
+        // If display ends with 'i', multiply it with the number
+        if (display2.value.endsWith("i")) {
+            display2.value += "*" + numValue;
+            this.updateDisplay(display1, display2);
             display2.value = "";
+            return;
+        }
+
+        // Clear display1 if previous operation was '='
+        if (display1.value.endsWith("=")) {
+            display1.value = "";
+        }
+
+        // Append digit normally
+        display2.value += numValue;
+    }
+
+    static iota(display1, display2) {
+        // Exit early if invalid state
+        if (
+            (display1.value.endsWith("=") && display2.value === "") ||
+            display2.value === "Invalid"
+        ) {
+            return;
+        }
+
+        // Avoid adding i after a decimal point
+        if (display2.value.endsWith(".") || display1.value.endsWith(".")) {
+            return;
+        }
+
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
+        }
+
+
+        // Handle case when last operation was '='
+        if (display1.value.endsWith("=")) {
+            display1.value = "";
+            display2.value += display2.value.endsWith("i") ? "*i" : "i";
+        }
+
+        // If i is already at the end, multiply by another i
+        else if (display2.value.endsWith("i")) {
+            this.updateDisplay(display1, display2);
+            display1.value += "*i";
+            this.equalFlag = true;
+        }
+
+        // Normal case: just append i
+        else {
+            display2.value += "i";
             this.equalFlag = true;
         }
     }
 
-    static toggleDegRad() {
-        const degOrRadButton = document.getElementById("degOrRad"); // Get the button
-        const currentText = degOrRadButton.innerText.trim();
-        // Toggle between "DEG" and "RAD"
-        if (currentText === "DEG") {
-            degOrRadButton.innerText = "RAD";
-            state.isDeg = false;
+    static decimal(display1, display2) {
+        const d1 = display1.value;
+        const d2 = display2.value;
+
+        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
+            return;
         }
-        else {
-            degOrRadButton.innerText = "DEG";
-            state.isDeg = true;
+
+        if ((d1.endsWith("=") && d2 === "") || d2 === "Invalid") return;
+
+        const lastToken2 = d2.split(/[\+\-\*\/\(\)]/).pop();
+
+        // Start a new number with "0." if the expression just ended with an operator
+        if (["+", "-", "*", "/", "(", "^", "log", "root"].some(op => d2.endsWith(op))) {
+            display2.value += "0.";
+            return;
         }
-    }
 
-    static updateTrigonoDisplay() {
-        const operatorPairs = [
-            document.getElementById("sin"),
-            document.getElementById("cos"),
-            document.getElementById("tan"),
-            document.getElementById("csc"),
-            document.getElementById("sec"),
-            document.getElementById("cot")
-        ];
-
-        const isInverse = operatorStateTrigono.isInverse;
-        const isHyper = operatorStateTrigono.isHyper;
-
-        for (const op of operatorPairs) {
-            const [std, inv, hyp, invhyp] = op.children;
-
-            std.style.display = "none";
-            inv.style.display = "none";
-            hyp.style.display = "none";
-            invhyp.style.display = "none";
-
-            if (!isInverse && !isHyper) std.style.display = "inline";
-            if (isInverse && !isHyper) inv.style.display = "inline";
-            if (!isInverse && isHyper) hyp.style.display = "inline";
-            if (isInverse && isHyper) invhyp.style.display = "inline";
+        // If display2 is empty, also start with "0."
+        if (d2 === "") {
+            display2.value = "0.";
+            return;
         }
+
+        // If the last input is an imaginary number (ends with 'i')
+        if (d2.endsWith("i")) {
+            display1.value += d2 + "*";
+            display2.value = "0.";
+            return;
+        }
+
+        // Prevent multiple consecutive dots
+        if (d2.endsWith(".")) return;
+
+        // Prevent decimal inside incomplete exponent like "2E+", "3e-"
+        const incompleteExponentPattern = /[eE][+\-]?$/;
+        if (incompleteExponentPattern.test(lastToken2)) return;
+
+        // Prevent decimal after a complete exponent (e.g., "2E+2")
+        const completeExponentPattern = /[eE][+\-]?\d+$/;
+        if (completeExponentPattern.test(d2)) return;
+
+        // Prevent multiple dots in the current number segment
+        if (lastToken2.includes(".")) return;
+
+        // Otherwise, add decimal point
+        display2.value += ".";
     }
 
-    static toggleInverseTrigono() {
-        const toggleButton = document.getElementById("trigonotoggle");
+    static basicOps(val, display1, display2) {
+        if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
+            return;
+        }
 
-        toggleButton.addEventListener("mouseenter", () => {
-            toggleButton.style.backgroundColor = operatorStateTrigono.isInverse ? "#cf3000" : "#303030"; // Add hover effect
-        });
-
-        toggleButton.addEventListener("mouseleave", () => {
-            toggleButton.style.backgroundColor = operatorStateTrigono.isInverse ? "#FF3D00" : "#3a3a3a";; // Revert to default
-        });
-
-        toggleButton.addEventListener('click', () => {
-            const isInverse = operatorStateTrigono.isInverse;
-
-            toggleButton.style.backgroundColor = isInverse ? "#3a3a3a" : "#FF3D00";
-            toggleButton.children[0].style.display = isInverse ? "inline" : "none"; // →
-            toggleButton.children[1].style.display = isInverse ? "none" : "inline"; // ←
-
-            operatorStateTrigono.isInverse = !isInverse;
-
-            this.updateTrigonoDisplay(); // Recalculate all displays
-        });
-    }
-
-    static toggleHyperTrigono() {
-        const toggleButton = document.getElementById("hyp");
-
-        toggleButton.addEventListener("mouseenter", () => {
-            toggleButton.style.backgroundColor = operatorStateTrigono.isHyper ? "#cf3000" : "#303030"; // Add hover effect
-        });
-
-        toggleButton.addEventListener("mouseleave", () => {
-            toggleButton.style.backgroundColor = operatorStateTrigono.isHyper ? "#FF3D00" : "#3a3a3a";; // Revert to default
-        });
-
-        toggleButton.addEventListener('click', () => {
-            const isHyper = operatorStateTrigono.isHyper;
-
-            toggleButton.style.backgroundColor = isHyper ? "#3a3a3a" : "#FF3D00";
-
-            operatorStateTrigono.isHyper = !isHyper;
-
-            this.updateTrigonoDisplay(); // Recalculate all displays
-        });
-    }
-
-
-    static toggleOperators() {
-        const toggleButton = document.getElementById("toggleOperators");
-
-        toggleButton.addEventListener("mouseenter", () => {
-            const currentColor = toggleButton.style.backgroundColor;
-
-            if (currentColor === "rgb(255, 61, 0)" || currentColor === "#FF3D00") {
-                toggleButton.style.backgroundColor = "#cf3000"; // Darker orange
-            } else if (currentColor === "rgb(48, 48, 48)" || currentColor === "#303030") {
-                toggleButton.style.backgroundColor = "#3a3a3a"; // Darker grey
+        // Helper: get operator character
+        const getOperator = (val) => {
+            switch (val) {
+                case "add": return "+";
+                case "subtract": return "-";
+                case "multiply": return "*";
+                case "divide": return "/";
+                case "power": return "^";
+                case "log": return "log";
+                case "root": return "root";
+                default: return "";
             }
-        });
+        };
 
-        toggleButton.addEventListener("mouseleave", () => {
-            const currentColor = toggleButton.style.backgroundColor;
+        const operator = getOperator(val);
 
-            // Revert based on hover color
-            if (currentColor === "rgb(207, 48, 0)" || currentColor === "#cf3000") {
-                toggleButton.style.backgroundColor = "#FF3D00"; // Original orange
-            } else if (currentColor === "rgb(58, 58, 58)" || currentColor === "#3a3a3a") {
-                toggleButton.style.backgroundColor = "#303030"; // Original grey
+        if (/[eE]$/.test(display1.value)) {
+            if (val === "subtract") {
+                display1.value += "-";
+            } else if (val === "add") {
+                display1.value += "+";
             }
-        });
-
-        const operatorPairs = [
-            document.getElementById("sqrOrCube"),
-            document.getElementById("sqrtOrCbrt"),
-            document.getElementById("powerOrRoot"),
-            document.getElementById("tenPowerOrTwoPower"),
-            document.getElementById("log10OrLog"),
-            document.getElementById("lnOrE"),
-            document.getElementById("toggleOperators")
-        ];
-
-        const isAlt = operatorState.isBool;
-        toggleButton.style.backgroundColor = isAlt ? "#FF3D00" : "#303030";
-
-        for (const op of operatorPairs) {
-            if (op.children.length >= 2) {
-                op.children[0].style.display = isAlt ? "none" : "inline";
-                op.children[1].style.display = isAlt ? "inline" : "none";
-            }
+            return;
         }
 
-        operatorState.isBool = !isAlt;
+        if (/[eE]$/.test(display2.value)) {
+            if (val === "subtract") {
+                display2.value += "-";
+            } else if (val === "add") {
+                display2.value += "+";
+            }
+            return;
+        }
+        else if (/[eE][+-]$/.test(display2.value)) {
+            if (val === "subtract" || val === "add") {
+                display2.value = display2.value.slice(0, -1) + operator;
+            }
+            return;
+        }
+        else if (/[eE][+-]$/.test(display1.value) && display2.value === "") {
+            if (val === "subtract" || val === "add") {
+                display1.value = display1.value.slice(0, -1) + operator;
+            }
+            return;
+        }
+
+
+        // If display1 ends with '(', allow only '-' for negative numbers
+        if (display1.value.endsWith("(") && display2.value === "") {
+            if (val === "subtract") {
+                this.updateDisplay(display1, display2);
+                display1.value += "-";
+            }
+            return;
+        }
+
+        // If nothing in display2 (pending number), and display1 is also empty
+        if (display2.value === "") {
+            if (display1.value === "") {
+                if (val !== "log" && val !== "root") {
+                    display1.value = "0" + operator;
+                    this.equalFlag = true;
+                }
+                return;
+            }
+
+            // Prevent multiple operators in a row
+            if (["+", "-", "*", "/", "^"].includes(display1.value.at(-1))) {
+                display1.value = display1.value.slice(0, -1) + operator;
+                return;
+            }
+
+            // Don't allow operator after a dot (incomplete number)
+            if (display1.value.endsWith(".")) {
+                return;
+            }
+
+            // Add operator if valid
+            display1.value += operator;
+            this.equalFlag = true;
+            return;
+        }
+
+        // If display2 has a value, append it to display1 and then operator
+        if (!(display2.value.endsWith(".") || display1.value.endsWith("."))) {
+            this.updateDisplay(display1, display2);
+            display1.value += operator;
+        }
     }
 
     static Brackets(display1, display2) {
@@ -283,10 +344,6 @@ export class Button {
         }
     }
 
-    static updateBracketDisplay(openBracketBtn) {
-        this.openBracketBtn.innerText = this.bracketCount === 0 ? "" : `${this.bracketCount}`;
-    }
-
     static clearAll(display1, display2) {
         display1.value = display2.value = "";
         this.bracketCount = 0;
@@ -300,9 +357,11 @@ export class Button {
                 const len = val.length;
 
                 // Handle known function patterns
-                const specialFuncs = ["arcsin(", "arccos(", "arctan(", "arccsc(", "arcsec(", "arccot(",
+                const specialFuncs = [
+                    "arcsinh(", "arccosh(", "arctanh(", "arccsch(", "arcsech(", "arccoth(",
+                    "arcsin(", "arccos(", "arctan(", "arccsc(", "arcsec(", "arccot(",
                     "sinh(", "cosh(", "tanh(", "csch(", "sech(", "coth(",
-                    "arcsinh(", "arccosh(", "arctanh(", "arccsch(", "arcsech(", "arccoth(", "mod(", "arg(", "rec(", "sqr(", "sqrt(", "conj(",
+                    "mod(", "arg(", "rec(", "sqr(", "sqrt(", "conj(",
                     "log10(", "ln(", "cube(", "cbrt(", "log", "root",
                     "sin(", "cos(", "tan(", "csc(", "sec(", "cot("];
 
@@ -334,222 +393,169 @@ export class Button {
         }
     }
 
-    static iota(display1, display2) {
-        // Exit early if invalid state
+    static countDigits(str) {
+        return (str.match(/\d/g) || []).length;
+    }
+
+    static updateBracketDisplay(openBracketBtn) {
+        this.openBracketBtn.innerText = this.bracketCount === 0 ? "" : `${this.bracketCount}`;
+    }
+
+    static updateDisplay(display1, display2) {
+        // Case 1: display1 is non-empty and does not end with an operator
         if (
-            (display1.value.endsWith("=") && display2.value === "") ||
-            display2.value === "Invalid"
+            display1.value !== "" &&
+            !["+", "-", "*", "/", "(", "^", "log", "root"].some(op => display1.value.endsWith(op))
         ) {
+            if (!this.equalFlag && display2.value !== "") {
+                display1.value = display2.value;
+                display2.value = "";
+                this.equalFlag = true;
+            }
             return;
         }
 
-        // Avoid adding i after a decimal point
-        if (display2.value.endsWith(".") || display1.value.endsWith(".")) {
-            return;
-        }
-
-        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
-            return;
-        }
-
-
-        // Handle case when last operation was '='
-        if (display1.value.endsWith("=")) {
-            display1.value = "";
-            display2.value += display2.value.endsWith("i") ? "*i" : "i";
-        }
-
-        // If i is already at the end, multiply by another i
-        else if (display2.value.endsWith("i")) {
-            this.updateDisplay(display1, display2);
-            display1.value += "*i";
-            this.equalFlag = true;
-        }
-
-        // Normal case: just append i
-        else {
-            display2.value += "i";
-            this.equalFlag = true;
-        }
-    }
-
-    static numVal(numValue, display1, display2) {
-        // Prevent input after evaluation or on invalid state
-        if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") return;
-        if (/[eE]$/.test(display2.value)) return;
-        if (/[eE]$/.test(display1.value)) return;
-
-        // Limit digit count to 32
-        if (this.countDigits(display2.value + numValue) > 50) return;
-
-        // Avoid leading zeroes like "00", "000", etc.
-        if (numValue === "0" && (display2.value === "" || display2.value === "0")) return;
-
-        // Append number to empty display
-        if (display2.value === "") {
-            display2.value = numValue;
-            return;
-        }
-
-        // If display ends with 'i', multiply it with the number
-        if (display2.value.endsWith("i")) {
-            display2.value += "*" + numValue;
-            this.updateDisplay(display1, display2);
+        // Case 2: If display2 is non-empty, append it to display1
+        if (display2.value !== "") {
+            display1.value += display2.value;
             display2.value = "";
-            return;
-        }
-
-        // Clear display1 if previous operation was '='
-        if (display1.value.endsWith("=")) {
-            display1.value = "";
-        }
-
-        // Append digit normally
-        display2.value += numValue;
-    }
-
-    static basicOps(val, display1, display2) {
-        if ((display1.value.endsWith("=") && display2.value === "") || display2.value === "Invalid") {
-            return;
-        }
-
-        // Helper: get operator character
-        const getOperator = (val) => {
-            switch (val) {
-                case "add": return "+";
-                case "subtract": return "-";
-                case "multiply": return "*";
-                case "divide": return "/";
-                case "power": return "^";
-                case "log": return "log";
-                case "root": return "root";
-                default: return "";
-            }
-        };
-
-        const operator = getOperator(val);
-
-        if (/[eE]$/.test(display1.value)) {
-            if (val === "subtract") {
-                display1.value += "-";
-            } else if (val === "add") {
-                display1.value += "+";
-            }
-            return;
-        }
-
-        if (/[eE]$/.test(display2.value)) {
-            if (val === "subtract") {
-                display2.value += "-";
-            } else if (val === "add") {
-                display2.value += "+";
-            }
-            return;
-        }
-        else if (/[eE][+-]$/.test(display2.value)) {
-            if (val === "subtract" || val === "add") {
-                display2.value = display2.value.slice(0, -1) + operator;
-            }
-            return;
-        }
-        else if (/[eE][+-]$/.test(display1.value) && display2.value === "") {
-            if (val === "subtract" || val === "add") {
-                display1.value = display1.value.slice(0, -1) + operator;
-            }
-            return;
-        }
-
-
-        // If display1 ends with '(', allow only '-' for negative numbers
-        if (display1.value.endsWith("(") && display2.value === "") {
-            if (val === "subtract") {
-                this.updateDisplay(display1, display2);
-                display1.value += "-";
-            }
-            return;
-        }
-
-        // If nothing in display2 (pending number), and display1 is also empty
-        if (display2.value === "") {
-            if (display1.value === "") {
-                if (val !== "log" && val !== "root") {
-                    display1.value = "0" + operator;
-                    this.equalFlag = true;
-                }
-                return;
-            }
-
-            // Prevent multiple operators in a row
-            if (["+", "-", "*", "/", "^"].includes(display1.value.at(-1))) {
-                display1.value = display1.value.slice(0, -1) + operator;
-                return;
-            }
-
-            // Don't allow operator after a dot (incomplete number)
-            if (display1.value.endsWith(".")) {
-                return;
-            }
-
-            // Add operator if valid
-            display1.value += operator;
             this.equalFlag = true;
-            return;
-        }
-
-        // If display2 has a value, append it to display1 and then operator
-        if (!(display2.value.endsWith(".") || display1.value.endsWith("."))) {
-            this.updateDisplay(display1, display2);
-            display1.value += operator;
         }
     }
 
-    static decimal(display1, display2) {
-        const d1 = display1.value;
-        const d2 = display2.value;
+    static updateTrigonoDisplay() {
+        const operatorPairs = [
+            document.getElementById("sin"),
+            document.getElementById("cos"),
+            document.getElementById("tan"),
+            document.getElementById("csc"),
+            document.getElementById("sec"),
+            document.getElementById("cot")
+        ];
 
-        if (/[eE][+-]?$/.test(display2.value) || /[eE][+-]?$/.test(display1.value)) {
-            return;
+        const isInverse = operatorStateTrigono.isInverse;
+        const isHyper = operatorStateTrigono.isHyper;
+
+        for (const op of operatorPairs) {
+            const [std, inv, hyp, invhyp] = op.children;
+
+            std.style.display = "none";
+            inv.style.display = "none";
+            hyp.style.display = "none";
+            invhyp.style.display = "none";
+
+            if (!isInverse && !isHyper) std.style.display = "inline";
+            if (isInverse && !isHyper) inv.style.display = "inline";
+            if (!isInverse && isHyper) hyp.style.display = "inline";
+            if (isInverse && isHyper) invhyp.style.display = "inline";
+        }
+    }
+
+    static toggleDegRad() {
+        const degOrRadButton = document.getElementById("degOrRad"); // Get the button
+        const currentText = degOrRadButton.innerText.trim();
+        // Toggle between "DEG" and "RAD"
+        if (currentText === "DEG") {
+            degOrRadButton.innerText = "RAD";
+            state.isDeg = false;
+        }
+        else {
+            degOrRadButton.innerText = "DEG";
+            state.isDeg = true;
+        }
+    }
+
+    static toggleInverseTrigono() {
+        const toggleButton = document.getElementById("trigonotoggle");
+
+        toggleButton.addEventListener("mouseenter", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isInverse ? "#cf3000" : "#303030"; // Add hover effect
+        });
+
+        toggleButton.addEventListener("mouseleave", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isInverse ? "#FF3D00" : "#3a3a3a";; // Revert to default
+        });
+
+        toggleButton.addEventListener('click', () => {
+            const isInverse = operatorStateTrigono.isInverse;
+
+            toggleButton.style.backgroundColor = isInverse ? "#3a3a3a" : "#FF3D00";
+            toggleButton.children[0].style.display = isInverse ? "inline" : "none"; // →
+            toggleButton.children[1].style.display = isInverse ? "none" : "inline"; // ←
+
+            operatorStateTrigono.isInverse = !isInverse;
+
+            this.updateTrigonoDisplay(); // Recalculate all displays
+        });
+    }
+
+    static toggleHyperTrigono() {
+        const toggleButton = document.getElementById("hyp");
+
+        toggleButton.addEventListener("mouseenter", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isHyper ? "#cf3000" : "#303030"; // Add hover effect
+        });
+
+        toggleButton.addEventListener("mouseleave", () => {
+            toggleButton.style.backgroundColor = operatorStateTrigono.isHyper ? "#FF3D00" : "#3a3a3a";; // Revert to default
+        });
+
+        toggleButton.addEventListener('click', () => {
+            const isHyper = operatorStateTrigono.isHyper;
+
+            toggleButton.style.backgroundColor = isHyper ? "#3a3a3a" : "#FF3D00";
+
+            operatorStateTrigono.isHyper = !isHyper;
+
+            this.updateTrigonoDisplay(); // Recalculate all displays
+        });
+    }
+
+    static toggleOperators() {
+        const toggleButton = document.getElementById("toggleOperators");
+
+        toggleButton.addEventListener("mouseenter", () => {
+            const currentColor = toggleButton.style.backgroundColor;
+
+            if (currentColor === "rgb(255, 61, 0)" || currentColor === "#FF3D00") {
+                toggleButton.style.backgroundColor = "#cf3000"; // Darker orange
+            } else if (currentColor === "rgb(48, 48, 48)" || currentColor === "#303030") {
+                toggleButton.style.backgroundColor = "#3a3a3a"; // Darker grey
+            }
+        });
+
+        toggleButton.addEventListener("mouseleave", () => {
+            const currentColor = toggleButton.style.backgroundColor;
+
+            // Revert based on hover color
+            if (currentColor === "rgb(207, 48, 0)" || currentColor === "#cf3000") {
+                toggleButton.style.backgroundColor = "#FF3D00"; // Original orange
+            } else if (currentColor === "rgb(58, 58, 58)" || currentColor === "#3a3a3a") {
+                toggleButton.style.backgroundColor = "#303030"; // Original grey
+            }
+        });
+
+        const operatorPairs = [
+            document.getElementById("sqrOrCube"),
+            document.getElementById("sqrtOrCbrt"),
+            document.getElementById("powerOrRoot"),
+            document.getElementById("tenPowerOrTwoPower"),
+            document.getElementById("log10OrLog"),
+            document.getElementById("lnOrE"),
+            document.getElementById("toggleOperators")
+        ];
+
+        const isAlt = operatorState.isBool;
+        toggleButton.style.backgroundColor = isAlt ? "#FF3D00" : "#303030";
+
+        for (const op of operatorPairs) {
+            if (op.children.length >= 2) {
+                op.children[0].style.display = isAlt ? "none" : "inline";
+                op.children[1].style.display = isAlt ? "inline" : "none";
+            }
         }
 
-        if ((d1.endsWith("=") && d2 === "") || d2 === "Invalid") return;
-
-        const lastToken2 = d2.split(/[\+\-\*\/\(\)]/).pop();
-
-        // Start a new number with "0." if the expression just ended with an operator
-        if (["+", "-", "*", "/", "(", "^", "log", "root"].some(op => d2.endsWith(op))) {
-            display2.value += "0.";
-            return;
-        }
-
-        // If display2 is empty, also start with "0."
-        if (d2 === "") {
-            display2.value = "0.";
-            return;
-        }
-
-        // If the last input is an imaginary number (ends with 'i')
-        if (d2.endsWith("i")) {
-            display1.value += d2 + "*";
-            display2.value = "0.";
-            return;
-        }
-
-        // Prevent multiple consecutive dots
-        if (d2.endsWith(".")) return;
-
-        // Prevent decimal inside incomplete exponent like "2E+", "3e-"
-        const incompleteExponentPattern = /[eE][+\-]?$/;
-        if (incompleteExponentPattern.test(lastToken2)) return;
-
-        // Prevent decimal after a complete exponent (e.g., "2E+2")
-        const completeExponentPattern = /[eE][+\-]?\d+$/;
-        if (completeExponentPattern.test(d2)) return;
-
-        // Prevent multiple dots in the current number segment
-        if (lastToken2.includes(".")) return;
-
-        // Otherwise, add decimal point
-        display2.value += ".";
+        operatorState.isBool = !isAlt;
     }
 
     static togglePlusMinus(display1, display2) {
@@ -658,38 +664,6 @@ export class Button {
     static lnNegOne(display1, display2) {
         // ln(-1) principal value = i * pi
         this.insertConstant("3.1415926535897932384626433832795i", display1, display2);
-    }
-
-    static equals(display1, display2, precision) {
-        if (!this.equalFlag) return;
-
-        if (display1.value !== "" || display2.value !== "") {
-            // Insert '*' if display1 ends with something other than operators, numbers, '.', or '(' and display2 isn't empty
-            if (
-                ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")", "i"]
-                    .some(op => display1.value.endsWith(op)) &&
-                display2.value !== ""
-            ) {
-                display1.value += "*";
-            }
-
-            const expression = (display1.value + display2.value).trim();
-
-            // Prevent evaluation if expression ends with operator or '('
-            if (/[+\-*/(^.]$/.test(expression)) return;
-
-            display1.value += display2.value + "=";
-
-            try {
-                const output = Eval(expression);
-                // Assuming output has toString(precision)
-                const result = output.toString ? output.toString(precision) : output.toFixed(precision);
-                display2.value = result;
-            } catch (e) {
-                display2.value = "Invalid";
-            }
-            this.equalFlag = false;
-        }
     }
 
     static insertFunction(display1, display2, funcString, needsMultiply = true, addBracket = true) {
@@ -915,7 +889,35 @@ export class Button {
         }
     }
 
-    static countDigits(str) {
-        return (str.match(/\d/g) || []).length;
+    static equals(display1, display2, precision) {
+        if (!this.equalFlag) return;
+
+        if (display1.value !== "" || display2.value !== "") {
+            // Insert '*' if display1 ends with something other than operators, numbers, '.', or '(' and display2 isn't empty
+            if (
+                ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")", "i"]
+                    .some(op => display1.value.endsWith(op)) &&
+                display2.value !== ""
+            ) {
+                display1.value += "*";
+            }
+
+            const expression = (display1.value + display2.value).trim();
+
+            // Prevent evaluation if expression ends with operator or '('
+            if (/[+\-*/(^.]$/.test(expression)) return;
+
+            display1.value += display2.value + "=";
+
+            try {
+                const output = Eval(expression);
+                // Assuming output has toString(precision)
+                const result = output.toString ? output.toString(precision) : output.toFixed(precision);
+                display2.value = result;
+            } catch (e) {
+                display2.value = "Invalid";
+            }
+            this.equalFlag = false;
+        }
     }
 }

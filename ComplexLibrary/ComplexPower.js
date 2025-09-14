@@ -231,6 +231,6 @@ export class ComplexPower {
 
 }
 
-console.log(ComplexPower.nthRtAll(1, 3).toString());
+// console.log(ComplexPower.nthRtAll(1, 3).toString());
 
 Object.seal(ComplexPower);
