@@ -5,6 +5,9 @@ const display1 = document.getElementById("inputBox1");
 const display2 = document.getElementById("inputBox2");
 const buttons = document.querySelectorAll(".buttons");
 
+const expressionHistory = document.getElementById("expression");
+const expressionValueHistory = document.getElementById("expressionValue");
+
 const MAX_LENGTH = 1000;  // Set max length for the input
 
 document.addEventListener("keydown", (event) => {
@@ -256,3 +259,4 @@ constButtons.forEach((button) => {
         }
     });
 });
+

@@ -26,12 +26,14 @@
     display: flex;
     flex-direction: column;
     background-color: var(--bgColor);
+    position: relative;  /* anchor for child overlay */
 }
 
 .top-container {
     display: flex;
     width: 100%;
-    height: 42%;
+    height: 40%;
+    overflow: visible;  /* allow children to render outside */
 }
 
 .header {
@@ -140,10 +142,9 @@
 }
 
 .memory {
-    width: 22%;
-    /* 22% of main's width */
     height: 100vh;
-    /* Full height of top-container */
+    width: 22%;
+    overflow-y: auto;
 }
 
 .history {
@@ -156,6 +157,50 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+}
+
+
+.historyContainer{
+    border-radius: 4%;
+    width: 90%;
+    height: 12%;
+    color: white;
+    margin-left: 5%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.historyContainer:hover {
+    background-color: #353535;
+}
+
+.expression,
+.expressionValue {
+    padding-left: 10%;
+    padding-right: 5%;
+    text-align: right;
+    border: none;
+    background: none;
+    outline: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.expression {
+    height: 25%;
+    width: 100%;
+    font-size: 2.3vh;
+    color: #a6a6a6;
+}
+
+.expressionValue {
+    height: 60%;
+    width: 100%;
+    font-size: 3.6vh;
+    font-weight: 500;
+    color: white;
 }
 
 .thin-line {
@@ -171,7 +216,7 @@
     height: 70%;
     /* 75% of main's height */
     background-color: var(--bgColor);
-    position: relative;
+    position: relative;  /* or leave static */
 }
 
 .advOperations{
