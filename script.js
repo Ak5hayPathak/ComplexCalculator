@@ -289,3 +289,11 @@ functionButtons.forEach((button) => {
         }
     });
 });
+
+const deleteBtn = document.querySelector('.deleteBtn');
+
+deleteBtn.addEventListener('click', () => {
+    const historyBlocks = document.querySelectorAll('.historyBlock');
+    historyBlocks.forEach(block => block.remove());
+    deleteBtn.style.display = "none";
+});

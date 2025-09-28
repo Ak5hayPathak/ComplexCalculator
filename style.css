@@ -148,7 +148,7 @@
 }
 
 .history {
-    height: 11.9%;
+    height: 12%;
     padding-left: 4%;
     width: 100%;
     color: var(--textColor);
@@ -159,8 +159,15 @@
     align-items: center;
 }
 
+.historyContainer {
+    height: 76%;
+    padding-left: 4%;
+    width: 100%;
+    color: var(--textColor);
+    overflow-y: auto;
+}
 
-.historyContainer{
+.historyBlock{
     border-radius: 4px;
     width: 90%;
     height: 12%;
@@ -173,7 +180,7 @@
     justify-content: center;
 }
 
-.historyContainer:hover {
+.historyBlock:hover {
     background-color: #353535;
 }
 
@@ -203,6 +210,57 @@
     color: white;
 }
 
+.deleteHistory {
+    height: 12%;
+    padding: 2%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.deleteBtn {
+    height: 50%;
+    padding: 2%;
+    width: 40%;
+    background-color: var(--bgColor);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    border: none;
+    box-shadow: none;
+    cursor: pointer; 
+    transition: background-color 0.25s ease-in-out; /* moved here */
+    display: none;
+}
+
+.deleteIcon {
+    width: 22px;
+    opacity: 0;                  /* hidden by default */
+    transition: opacity 0.25s ease-in-out;
+    filter: brightness(0) invert(1);
+}
+
+.deleteBtn:hover {
+    background-color: #353535;
+}
+
+.deleteBtn:hover .deleteIcon {
+    opacity: 1;                  /* show only on hover */
+}
+
+.deleteBtn:active {
+    background-color: rgba(255, 0, 0, 0.641);/* Color when clicked */
+    transform: scale(0.98);/* Slight press effect */
+}
+
+.deleteBtn:active .deleteIcon {
+    filter: brightness(0) invert(0.7);                
+}
+
+
 .thin-line {
   height: 1px;
   width: 105%;            /* Prevent horizontal overflow */
@@ -216,6 +274,7 @@
     height: 70%;
     /* 75% of main's height */
     background-color: var(--bgColor);
+    transition: background-color 0.25s ease-in-out; /* moved here */
     position: relative;  /* or leave static */
 }
 

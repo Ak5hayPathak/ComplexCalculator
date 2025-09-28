@@ -1133,7 +1133,7 @@ export class Button {
   static createHistoryContainer(display1, display2) {
     // Create the container (clickable like a button)
     const container = document.createElement("div");
-    container.className = "historyContainer";
+    container.className = "historyBlock";
     container.tabIndex = 0; // focusable
     container.style.cursor = "pointer";
 
@@ -1169,14 +1169,20 @@ export class Button {
       }
     });
 
-    // Append container to .memory
-    const memoryElement = document.querySelector(".memory");
+    // Append container to .historyContainer
+    const memoryElement = document.querySelector(".historyContainer");
     if (memoryElement) {
       memoryElement.appendChild(container);
+
+      // Show delete button when a history block is added
+      const deleteBtn = document.querySelector(".deleteBtn");
+      if (deleteBtn) {
+        deleteBtn.style.display = "inline-block"; // or "block"
+      }
     } else {
-      console.warn("No element with class .memory found.");
+      console.warn("No element with class .historyContainer found.");
     }
-  }
+}
 
   static equals(display1, display2, precision) {
     if (!this.equalFlag) return;
