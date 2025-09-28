@@ -154,6 +154,7 @@ Button.toggleHyperTrigono();
 
 Button.toggleWithOutsideClick('#constants', '#consts', 'flex', "#202020", "transparent");
 
+Button.toggleWithOutsideClick('#functions', '#additionalFunctions', 'flex', "#202020", "transparent");
 
 const trigButtons = document.querySelectorAll(".trigButton");
 
@@ -260,3 +261,31 @@ constButtons.forEach((button) => {
     });
 });
 
+const functionButtons = document.querySelectorAll(".functionButton");
+
+functionButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const val = button.id;
+
+        switch(val){
+            case "polarFunction":
+                Button.polar(display1, display2);
+                break;
+            case "eulerFunction":
+                Button.euler(display1, display2);
+                break;
+            case "gammaFunction":
+                Button.gamma(display1, display2);
+                break;
+            case "randFunction":
+                Button.rand(display1, display2);
+                break;
+            case "ceilFunction":
+                Button.ceil(display1, display2);
+                break;
+            case "floorFunction":
+                Button.floor(display1, display2);
+                break;
+        }
+    });
+});

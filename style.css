@@ -161,7 +161,7 @@
 
 
 .historyContainer{
-    border-radius: 4%;
+    border-radius: 4px;
     width: 90%;
     height: 12%;
     color: white;
@@ -368,6 +368,60 @@
     transform: scale(0.98);
     /* Slight press effect */
 }
+
+
+
+#additionalFunctions{
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: #2d2d2d;
+    border-width: 0px;
+    border-radius: 6px;
+    height: 30%;
+    width: 22%;
+    z-index: 10;
+    position: absolute;
+    top: 11%;
+    left: 11%;
+}
+
+#funRow1, #funRow2{
+    width: 100%;
+    height: 40%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#additionalFunctions button{
+    color: var(--textColor);
+    background-color: var(--numbersColor);
+    width: 31%;
+    height: 100%;
+    font-size: 2.2vh;
+    border-width: 0px;
+    border-radius: 6px;
+    border-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.05s ease-in-out;
+    cursor: pointer;
+}
+
+#additionalFunctions button:hover {
+    background-color: var(--operatorsColor);
+}
+
+#additionalFunctions button:active {
+    background-color: var(--buttonActiveColor);
+    /* Color when clicked */
+    transform: scale(0.98);
+    /* Slight press effect */
+}
+
 
 .button-arranger {
     width: 100%;

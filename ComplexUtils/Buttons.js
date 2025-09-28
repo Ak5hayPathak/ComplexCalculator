@@ -1,3 +1,4 @@
+import { Complex } from "../ComplexLibrary/Complex.js";
 import {
   Eval,
   state,
@@ -441,6 +442,12 @@ export class Button {
           "csc(",
           "sec(",
           "cot(",
+          "euler(",
+          "gamma(",
+          "polar(",
+          "rand(",
+          "ceil(",
+          "floor("
         ];
 
         const matchedFunc = specialFuncs.find((func) => val.endsWith(func));
@@ -1032,6 +1039,31 @@ export class Button {
   static arccoth(display1, display2) {
     this.insertFunction(display1, display2, "arccoth");
   }
+
+  static polar(display1, display2) {
+    this.insertFunction(display1, display2, "polar");
+  }
+
+  static euler(display1, display2) {
+    this.insertFunction(display1, display2, "euler");
+  }
+
+  static gamma(display1, display2) {
+    this.insertFunction(display1, display2, "gamma");
+  }
+
+  static rand(display1, display2) {
+    this.insertConstant(`${Complex.random(-1, 1).toString(10)}`, display1, display2);
+  }
+
+  static ceil(display1, display2) {
+    this.insertFunction(display1, display2, "ceil");
+  }
+
+  static floor(display1, display2) {
+    this.insertFunction(display1, display2, "floor");
+  }
+
 
   static toggleWithOutsideClick(
     triggerId,

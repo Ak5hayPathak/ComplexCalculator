@@ -70,5 +70,5 @@ export class ComplexGamma {
     }
 }
 
-console.log(ComplexGamma.gamma(new Complex("21")).toString());
+//console.log(ComplexGamma.gamma(new Complex("21")).toString());
 Object.seal(ComplexGamma);

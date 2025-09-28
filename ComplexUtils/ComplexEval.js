@@ -4,6 +4,7 @@ import { ComplexPower } from '../ComplexLibrary/ComplexPower.js';
 import { ComplexLog } from '../ComplexLibrary/ComplexLog.js';
 import { ComplexTrigono } from '../ComplexLibrary/ComplexTrigono.js';
 import { ComplexHyperbolic } from '../ComplexLibrary/ComplexHyperbolic.js';
+import { ComplexGamma } from '../ComplexLibrary/ComplexGamma.js';
 
 export let state = {
     isDeg: true
@@ -54,7 +55,13 @@ export function Eval(input) {
         .replace(/log10/gi, "LOG10")
         .replace(/ln/gi, "LN")
         .replace(/sqr/gi, "SQR")
-        .replace(/log/gi, "LOG");
+        .replace(/log/gi, "LOG")
+        .replace(/rand/gi, "RAND")
+        .replace(/ceil/gi, "CEIL")
+        .replace(/floor/gi, "FLOOR")
+        .replace(/euler/gi, "EULER")
+        .replace(/polar/gi, "POLAR")
+        .replace(/gamma/gi, "GAMMA");
 
     const tokens = tokenize(input);
     const postfix = infixToPostfix(tokens);
@@ -62,14 +69,14 @@ export function Eval(input) {
 }
 
 function tokenize(expr) {
-    const regex = /(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?i?|[+\-*/^()]|SQRT|SQR|MOD|ARG|REC|LOG10|LN|CONJ|LOG|CUBE|CBRT|ROOT|ARCSINH|ARCCOSH|ARCTANH|ARCCSCH|ARCSECH|ARCCOTH|ARCSIN|ARCCOS|ARCTAN|ARCCSC|ARCSEC|ARCCOT|SINH|COSH|TANH|CSCH|SECH|COTH|SIN|COS|TAN|CSC|SEC|COT|i/g;
+    const regex = /(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?i?|[+\-*/^()]|SQRT|SQR|MOD|ARG|REC|LOG10|LN|CONJ|LOG|CUBE|CBRT|ROOT|ARCSINH|ARCCOSH|ARCTANH|ARCCSCH|ARCSECH|ARCCOTH|ARCSIN|ARCCOS|ARCTAN|ARCCSC|ARCSEC|ARCCOT|SINH|COSH|TANH|CSCH|SECH|COTH|SIN|COS|TAN|CSC|SEC|COT|RAND|CEIL|FLOOR|EULER|POLAR|GAMMA|i/g;
     const rawTokens = expr.match(regex);
     if (!rawTokens) return [];
 
     const tokens = [];
     for (let i = 0; i < rawTokens.length; i++) {
         const token = rawTokens[i];
-        if (token === '-' && (i === 0 || ["+", "-", "*", "/", "(", "^", "SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "LOG", "CUBE", "CBRT", "ROOT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH", "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN", "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH", "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"].includes(rawTokens[i - 1]))) {
+        if (token === '-' && (i === 0 || ["+", "-", "*", "/", "(", "^", "SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "LOG", "CUBE", "CBRT", "ROOT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH", "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN", "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH", "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT", "RAND", "CEIL", "FLOOR", "EULER", "GAMMA", "POLAR"].includes(rawTokens[i - 1]))) {
             tokens.push('u-'); // unary minus
         } else {
             tokens.push(token);
@@ -106,7 +113,8 @@ function infixToPostfix(tokens) {
         "LN", "CONJ", "CUBE", "CBRT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH",
         "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN",
         "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH",
-        "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"
+        "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT", 
+        "RAND", "CEIL", "FLOOR", "EULER", "GAMMA", "POLAR"
     ]);
 
     const output = [];
@@ -183,7 +191,7 @@ function evaluatePostfix(postfix) {
         } else if (["SQRT", "MOD", "ARG", "REC", "SQR", "LOG10", "LN", "CONJ", "CUBE", "CBRT", "ARCSINH", "ARCCOSH", "ARCTANH", "ARCCSCH",
             "ARCSECH", "ARCCOTH", "ARCSIN", "ARCCOS", "ARCTAN",
             "ARCCSC", "ARCSEC", "ARCCOT", "SINH", "COSH", "TANH",
-            "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT"].includes(token)) {
+            "CSCH", "SECH", "COTH", "SIN", "COS", "TAN", "CSC", "SEC", "COT", "RAND", "CEIL", "FLOOR", "EULER", "GAMMA", "POLAR"].includes(token)) {
             const z = stack.pop();
             switch (token) {
                 case "MOD":
@@ -312,6 +320,29 @@ function evaluatePostfix(postfix) {
                 case "ARCSEC":
                     stack.push(new Complex(
                         state.isDeg ? ComplexTrigono.arcSecDegrees(z) : ComplexTrigono.arcSec(z)
+                    ));
+                    break;
+                case "EULER": 
+                    stack.push(new Complex(
+                        ComplexPower.expComplex(ComplexMath.multiply(z, Complex.IOTA))
+                    ));
+                    break;
+                case "POLAR": 
+                    stack.push(z.printPolar(10));
+                    break;
+                case "GAMMA": 
+                    stack.push(new Complex(
+                        ComplexGamma.gamma(z)
+                    ));
+                    break;
+                case "CEIL": 
+                    stack.push(new Complex(
+                        ComplexMath.ceil(z)
+                    ));
+                    break;
+                case "FLOOR": 
+                    stack.push(new Complex(
+                        ComplexMath.floor(z)
                     ));
                     break;
             }
