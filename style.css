@@ -252,12 +252,12 @@
 }
 
 .deleteBtn:active {
-    background-color: rgba(255, 0, 0, 0.641);/* Color when clicked */
+    background-color: rgba(255, 0, 0, 0.572);/* Color when clicked */
     transform: scale(0.98);/* Slight press effect */
 }
 
 .deleteBtn:active .deleteIcon {
-    filter: brightness(0) invert(0.7);                
+    filter: brightness(0) invert(0.9);                
 }
 
 
