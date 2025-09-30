@@ -247,11 +247,12 @@
 }
 
 .deleteBtn:hover {
-    background-color: #ff000059;
+    background-color: var(--equalsHoverColor);
 }
 
 .deleteBtn:active {
     transform: scale(0.98);/* Slight press effect */
+    background-color: var(--equalsActiveColor);
 }
 
 .deleteBtn:active .deleteIcon {
