@@ -1064,7 +1064,6 @@ export class Button {
     this.insertFunction(display1, display2, "floor");
   }
 
-
   static toggleWithOutsideClick(
     triggerId,
     targetId,

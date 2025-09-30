@@ -161,18 +161,20 @@
 
 .historyContainer {
     height: 76%;
-    padding-left: 4%;
+    padding-left: 1.5%;
     width: 100%;
     color: var(--textColor);
     overflow-y: auto;
 }
 
 .historyBlock{
-    border-radius: 4px;
+    border-radius: 6px;
     width: 90%;
-    height: 12%;
+    height: 16%;
     color: white;
+    background-color: #272727;
     margin-left: 5%;
+    margin-bottom: 4%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
@@ -193,12 +195,13 @@
     background: none;
     outline: none;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    cursor: pointer;
 }
 
 .expression {
     height: 25%;
     width: 100%;
-    font-size: 2.3vh;
+    font-size: 2.2vh;
     color: #a6a6a6;
 }
 
@@ -224,7 +227,7 @@
     height: 50%;
     padding: 2%;
     width: 40%;
-    background-color: var(--bgColor);
+    background-color: #353535;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -238,28 +241,22 @@
 
 .deleteIcon {
     width: 22px;
-    opacity: 0;                  /* hidden by default */
+    opacity: 1;                  /* hidden by default */
     transition: opacity 0.25s ease-in-out;
     filter: brightness(0) invert(1);
 }
 
 .deleteBtn:hover {
-    background-color: #353535;
-}
-
-.deleteBtn:hover .deleteIcon {
-    opacity: 1;                  /* show only on hover */
+    background-color: #ff000059;
 }
 
 .deleteBtn:active {
-    background-color: rgba(255, 0, 0, 0.572);/* Color when clicked */
     transform: scale(0.98);/* Slight press effect */
 }
 
 .deleteBtn:active .deleteIcon {
     filter: brightness(0) invert(0.9);                
 }
-
 
 .thin-line {
   height: 1px;

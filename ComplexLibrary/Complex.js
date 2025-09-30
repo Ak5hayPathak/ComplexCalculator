@@ -191,7 +191,7 @@ export class Complex {
     const mod = this.getMod();
     const angle = this.getAngle();
 
-    return `${mod.toFixed(precision)} * (2.7182818284590452353602874713527)^(i * (${angle.toFixed(precision)}))`;
+    return `${mod.toFixed(precision)} * (2.7182818284)^(i * (${angle.toFixed(precision)}))`;
   }
 
   // Inside your Complex class
