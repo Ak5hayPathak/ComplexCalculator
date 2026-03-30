@@ -117,7 +117,7 @@ export class Button {
     // Start a new number with "0." if the expression just ended with an operator
     if (
       ["+", "-", "*", "/", "(", "^", "log", "root"].some((op) =>
-        d2.endsWith(op)
+        d2.endsWith(op),
       )
     ) {
       display2.value += "0.";
@@ -261,7 +261,7 @@ export class Button {
   static Brackets(display1, display2) {
     const endsWithOp = (str) =>
       ["+", "-", "*", "/", "^", "(", "log", "root", "."].some((op) =>
-        str.endsWith(op)
+        str.endsWith(op),
       );
     const isDisplay2Valid =
       display2.value !== "" && display2.value !== "Invalid";
@@ -447,7 +447,7 @@ export class Button {
           "polar(",
           "rand(",
           "ceil(",
-          "floor("
+          "floor(",
         ];
 
         const matchedFunc = specialFuncs.find((func) => val.endsWith(func));
@@ -493,7 +493,7 @@ export class Button {
     if (
       display1.value !== "" &&
       !["+", "-", "*", "/", "(", "^", "log", "root"].some((op) =>
-        display1.value.endsWith(op)
+        display1.value.endsWith(op),
       )
     ) {
       if (!this.equalFlag && display2.value !== "") {
@@ -679,7 +679,7 @@ export class Button {
     if (expr !== "" && !expr.endsWith("=")) {
       if (
         ["+", "-", "*", "/", "(", ".", "E", "^", "log", "root"].some((op) =>
-          expr.endsWith(op)
+          expr.endsWith(op),
         )
       ) {
         return;
@@ -723,7 +723,7 @@ export class Button {
 
     if (
       ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")", "i"].some((op) =>
-        display2.value.endsWith(op)
+        display2.value.endsWith(op),
       )
     ) {
       this.updateDisplay(display1, display2);
@@ -733,118 +733,29 @@ export class Button {
     }
   }
 
-  static e(display1, display2) {
-    this.insertConstant(
-      "2.7182818284590452353602874713527",
-      display1,
-      display2
-    );
-  }
+  static CONSTANTS = {
+    pi: "3.1415926535897932384626433832795",
+    e: "2.7182818284590452353602874713527",
+    omega: "(-0.5+0.8660254037844386467637231707529i)",
+    omega_sqr: "(-0.5-0.8660254037844386467637231707529i)",
+    EulerMascheroni: "0.5772156649015328606065120900824",
+    Golden_ratio: "1.6180339887498948482045868343656",
+    Catalan: "0.9159655941772190150546035149324",
+    Apery: "1.2020569031595942853997381615114",
+    Feigenbaum1: "4.6692016091029906718532038204662",
+    Feigenbaum2: "2.5029078750958928222839028732182",
+    Khinchin: "2.6854520010653064453097148354818",
+    Liouville: "0.1100010000000000000000000000000",
+    PlasticNumber: "1.3247179572447460259609088544781",
+    lnNegOne: "3.1415926535897932384626433832795i",
+    rand: `${Complex.random(-1, 1).toString(10)}`
+  };
 
-  static pi(display1, display2) {
-    this.insertConstant(
-      "3.1415926535897932384626433832795",
-      display1,
-      display2
-    );
-  }
+  static insertNamedConstant(name, display1, display2) {
+    const constant = this.CONSTANTS[name];
+    if (!constant) return;
 
-  static omega(display1, display2) {
-    this.insertConstant(
-      "(-0.5+0.8660254037844386467637231707529i)",
-      display1,
-      display2
-    );
-  }
-
-  static omega_sqr(display1, display2) {
-    this.insertConstant(
-      "(-0.5-0.8660254037844386467637231707529i)",
-      display1,
-      display2
-    );
-  }
-
-  static EulerMascheroni(display1, display2) {
-    this.insertConstant(
-      "0.5772156649015328606065120900824",
-      display1,
-      display2
-    );
-  }
-
-  static Golden_ratio(display1, display2) {
-    this.insertConstant(
-      "1.6180339887498948482045868343656",
-      display1,
-      display2
-    );
-  }
-
-  static Catalan(display1, display2) {
-    this.insertConstant(
-      "0.9159655941772190150546035149324",
-      display1,
-      display2
-    );
-  }
-
-  static Apery(display1, display2) {
-    this.insertConstant(
-      "1.2020569031595942853997381615114",
-      display1,
-      display2
-    );
-  }
-
-  static Feigenbaum1(display1, display2) {
-    this.insertConstant(
-      "4.6692016091029906718532038204662",
-      display1,
-      display2
-    );
-  }
-
-  static Feigenbaum2(display1, display2) {
-    this.insertConstant(
-      "2.5029078750958928222839028732182",
-      display1,
-      display2
-    );
-  }
-
-  static Khinchin(display1, display2) {
-    this.insertConstant(
-      "2.6854520010653064453097148354818",
-      display1,
-      display2
-    );
-  }
-
-  static Liouville(display1, display2) {
-    // Liouville's constant approximated to 31 decimals
-    this.insertConstant(
-      "0.1100010000000000000000000000000",
-      display1,
-      display2
-    );
-  }
-
-  static PlasticNumber(display1, display2) {
-    this.insertConstant(
-      "1.3247179572447460259609088544781",
-      display1,
-      display2
-    );
-  }
-
-  static lnNegOne(display1, display2) {
-    // ln(-1) principal value = i * pi
-    this.insertConstant(
-      "3.1415926535897932384626433832795i",
-      display1,
-      display2
-    );
+    this.insertConstant(constant, display1, display2);
   }
 
   static insertFunction(
@@ -852,7 +763,7 @@ export class Button {
     display2,
     funcString,
     needsMultiply = true,
-    addBracket = true
+    addBracket = true,
   ) {
     const needsBracketUpdate = () => {
       this.bracketCount++;
@@ -868,7 +779,7 @@ export class Button {
 
     const endsWithOperator = (str) => {
       return ["+", "-", "*", "/", "^", "(", ".", "log", "root"].some((op) =>
-        str.endsWith(op)
+        str.endsWith(op),
       );
     };
 
@@ -952,7 +863,7 @@ export class Button {
       display2,
       "(2.7182818284590452353602874713527)^",
       true,
-      false
+      false,
     );
   }
 
@@ -1053,7 +964,11 @@ export class Button {
   }
 
   static rand(display1, display2) {
-    this.insertConstant(`${Complex.random(-1, 1).toString(10)}`, display1, display2);
+    this.insertConstant(
+      `${Complex.random(-1, 1).toString(10)}`,
+      display1,
+      display2,
+    );
   }
 
   static ceil(display1, display2) {
@@ -1069,7 +984,7 @@ export class Button {
     targetId,
     displayMode = "block",
     activeBg = "#202020",
-    defaultBg = ""
+    defaultBg = "",
   ) {
     const trigger = document.querySelector(triggerId);
     const target = document.querySelector(targetId);
@@ -1122,7 +1037,7 @@ export class Button {
 
     if (
       ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].some((op) =>
-        display2.value.endsWith(op)
+        display2.value.endsWith(op),
       )
     ) {
       display2.value += "e+";
@@ -1181,7 +1096,7 @@ export class Button {
     } else {
       console.warn("No element with class .historyContainer found.");
     }
-}
+  }
 
   static equals(display1, display2, precision) {
     if (!this.equalFlag) return;
@@ -1190,7 +1105,7 @@ export class Button {
       // Insert '*' if display1 ends with something other than operators, numbers, '.', or '(' and display2 isn't empty
       if (
         ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ")", "i"].some(
-          (op) => display1.value.endsWith(op)
+          (op) => display1.value.endsWith(op),
         ) &&
         display2.value !== ""
       ) {

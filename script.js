@@ -1,15 +1,37 @@
 import { Button } from '../ComplexUtils/Buttons.js';
 import { operatorState, operatorStateTrigono } from '../ComplexUtils/ComplexEval.js';
 
-const display1 = document.getElementById("inputBox1");
-const display2 = document.getElementById("inputBox2");
-const buttons = document.querySelectorAll(".buttons");
+const display1 = document.getElementById("inputBox2");
+const display2 = document.getElementById("userInputBox");
 
-const expressionHistory = document.getElementById("expression");
-const expressionValueHistory = document.getElementById("expressionValue");
+
+const mainButtons = document.querySelectorAll(".buttons");
+const trigButtons = document.querySelectorAll(".trigButton");
+const constButtons = document.querySelectorAll(".constButton");
+const functionButtons = document.querySelectorAll(".functionButton");
+const historyDeleteBtn = document.querySelector('.deleteBtn');
+
 
 const MAX_LENGTH = 1000;  // Set max length for the input
 
+const constantButtonMap = {
+    omega: "omega",
+    omega_sqr: "omega_sqr",
+    piConst: "pi",
+    eConst: "e",
+    EulerMascheroni: "EulerMascheroni",
+    GoldenRatio: "Golden_ratio",
+    Catalan: "Catalan",
+    Apery: "Apery",
+    Feigenbaum1: "Feigenbaum1",
+    Feigenbaum2: "Feigenbaum2",
+    Khinchin: "Khinchin",
+    Liouville: "Liouville",
+    PlasticNumber: "PlasticNumber",
+    lnNegOne: "lnNegOne"
+};
+
+//Handle Keyboard Input
 document.addEventListener("keydown", (event) => {
     const key = event.key;
 
@@ -68,7 +90,8 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-buttons.forEach(button => {
+//Handle On-screen calculator buttons
+mainButtons.forEach(button => {
     button.addEventListener("click", () => {
 
         if (display1.value.length >= MAX_LENGTH && button.id !== "backspace" && button.id !== "clear-all") {
@@ -147,17 +170,7 @@ buttons.forEach(button => {
     });
 });
 
-Button.toggleWithOutsideClick('#trigono', '#trigonoOps', 'flex', "#202020", "transparent");
-
-Button.toggleInverseTrigono();
-Button.toggleHyperTrigono();
-
-Button.toggleWithOutsideClick('#constants', '#consts', 'flex', "#202020", "transparent");
-
-Button.toggleWithOutsideClick('#functions', '#additionalFunctions', 'flex', "#202020", "transparent");
-
-const trigButtons = document.querySelectorAll(".trigButton");
-
+//Handle Trigonometry Buttons
 trigButtons.forEach((button) => {
     button.addEventListener('click', () => {
         const val = button.id;
@@ -205,64 +218,7 @@ trigButtons.forEach((button) => {
     });
 });
 
-const constButtons = document.querySelectorAll(".constButton");
-
-constButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-        const val = button.id;
-
-        switch (val) {
-            case "omega":
-                Button.omega(display1, display2);
-                break;
-            case "omega_sqr":
-                Button.omega_sqr(display1, display2);
-                break;
-            case "piConst":
-                Button.pi(display1, display2);
-                break;
-            case "eConst":
-                Button.e(display1, display2);
-                break;
-            case "i":
-                Button.iota(display1, display2);
-                break;
-            case "EulerMascheroni":
-                Button.EulerMascheroni(display1, display2);
-                break;
-            case "GoldenRatio":
-                Button.Golden_ratio(display1, display2);
-                break;
-            case "Catalan":
-                Button.Catalan(display1, display2);
-                break;
-            case "Apery":
-                Button.Apery(display1, display2);
-                break;
-            case "Feigenbaum1":
-                Button.Feigenbaum1(display1, display2);
-                break;
-            case "Feigenbaum2":
-                Button.Feigenbaum2(display1, display2);
-                break;
-            case "Khinchin":
-                Button.Khinchin(display1, display2);
-                break;
-            case "Liouville":
-                Button.Liouville(display1, display2);
-                break;
-            case "PlasticNumber":
-                Button.PlasticNumber(display1, display2);
-                break;
-            case "lnNegOne":
-                Button.lnNegOne(display1, display2);
-                break;
-        }
-    });
-});
-
-const functionButtons = document.querySelectorAll(".functionButton");
-
+//Handle Functions Buttons
 functionButtons.forEach((button) => {
     button.addEventListener('click', () => {
         const val = button.id;
@@ -290,10 +246,33 @@ functionButtons.forEach((button) => {
     });
 });
 
-const deleteBtn = document.querySelector('.deleteBtn');
-
-deleteBtn.addEventListener('click', () => {
+//Handle Delete History Button
+historyDeleteBtn.addEventListener('click', () => {
     const historyBlocks = document.querySelectorAll('.historyBlock');
     historyBlocks.forEach(block => block.remove());
-    deleteBtn.style.display = "none";
+    historyDeleteBtn.style.display = "none";
+});
+
+//Handle Toggle Buttons
+Button.toggleWithOutsideClick('#trigono', '#trigonoOps', 'flex', "#202020", "transparent");
+Button.toggleInverseTrigono();
+Button.toggleHyperTrigono();
+Button.toggleWithOutsideClick('#constants', '#consts', 'flex', "#202020", "transparent");
+Button.toggleWithOutsideClick('#functions', '#additionalFunctions', 'flex', "#202020", "transparent");
+
+//Handle Constant Buttons
+constButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const val = button.id;
+
+        if (val === "i") {
+            Button.iota(display1, display2);
+            return;
+        }
+
+        const constantName = constantButtonMap[val];
+        if (constantName) {
+            Button.insertNamedConstant(constantName, display1, display2);
+        }
+    });
 });
