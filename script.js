@@ -66,9 +66,9 @@ document.addEventListener("keydown", (event) => {
             break;
         case "x": Button.conj(display1, display2);
             break;
-        case "e": Button.e(display1, display2);
+        case "e": Button.insertNamedConstant("e", display1, display2);
             break;
-        case "p": Button.pi(display1, display2);
+        case "p": Button.insertNamedConstant("pi", display1, display2);
             break;
         case ".": Button.decimal(display1, display2);
             break;
@@ -160,9 +160,9 @@ mainButtons.forEach(button => {
                 break;
             case "toggleOperators": Button.toggleOperators();
                 break;
-            case "e": Button.e(display1, display2);
+            case "e": Button.insertNamedConstant("e", display1, display2);
                 break;
-            case "pi": Button.pi(display1, display2);
+            case "pi": Button.insertNamedConstant("pi", display1, display2);
                 break;
             case "equals": Button.equals(display1, display2, 15);
                 break;
