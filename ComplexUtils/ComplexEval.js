@@ -367,4 +367,3 @@ function parseComplex(token) {
     }
 }
 
-// console.log(new Complex("2+3i").printPolar(12));

@@ -6,16 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complex Calculator</title>
     <!-- MathJax CDN -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
-
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']],
+                displayMath: [['\\[', '\\]'], ['$$', '$$']]
+            }
+        };
+    </script>
     <link rel="icon" type="image/png" href="../svgs/fevicon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="main">
-        
+
         <div class="top-container">
             <div class="header">
                 <div class="calcNav">
@@ -54,7 +59,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="input-btns">
 
             <div id="trigonoOps">
@@ -271,6 +276,7 @@
     </div>
 
     <script type="module" src="script.js"></script>
+    <script src="./mathjax/tex-mml-chtml.js"></script>
 
 </body>
 
